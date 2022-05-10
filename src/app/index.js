@@ -13,25 +13,31 @@ const app = websocket(new Koa())
 app.use(bodyParser())
 
 // 解决跨域问题
-app.use(async (ctx, next) =>{
-  // 修改响应头
-  ctx.response.set('Access-Control-Allow-Origin', '*');
-  ctx.response.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-  ctx.response.set('Access-Control-Allow-Methods', 'PATCH, POST, GET, DELETE, OPTIONS');
+app.use(async (ctx, next) => {
+	// 修改响应头
+	ctx.response.set('Access-Control-Allow-Origin', '*')
+	ctx.response.set(
+		'Access-Control-Allow-Headers',
+		'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild'
+	)
+	ctx.response.set(
+		'Access-Control-Allow-Methods',
+		'PATCH, POST, GET, DELETE, OPTIONS'
+	)
 
-  if(ctx.request.method == 'OPTIONS') {
-    ctx.body = 200
-  }else {
-    await next()
-  }
+	if (ctx.request.method == 'OPTIONS') {
+		ctx.body = 200
+	} else {
+		await next()
+	}
 })
 
 // 导入路由
-fs.readdirSync(path.join(__dirname, '../router')).forEach(file =>{
-  if(file === 'socket') return;
-  const router = require(`../router/${file}`)
-  app.use(router.routes())
-  // app.use(router.allowedMethods())
+fs.readdirSync(path.join(__dirname, '../router')).forEach((file) => {
+	if (file === 'socket') return
+	const router = require(`../router/${file}`)
+	app.use(router.routes())
+	// app.use(router.allowedMethods())
 })
 
 // 导入socket路由
