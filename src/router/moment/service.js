@@ -106,10 +106,11 @@ class MomentService {
 	}
 
 	// 修改动态内容
-	async update(id, label, content) {
+	async update(id, label, title, content) {
 		// 修改内容
-		const statement = 'UPDATE moment SET content = ?, label_id = ? WHERE id = ?'
-		await connection.execute(statement, [content, label, id])
+		const statement =
+			'UPDATE moment SET title = ?, content = ?, label_id = ? WHERE id = ?'
+		await connection.execute(statement, [title, content, label, id])
 
 		return '修改成功~'
 	}

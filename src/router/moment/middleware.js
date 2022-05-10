@@ -76,14 +76,14 @@ class MomentMiddleware {
 
 	// 修改动态
 	async updateMoment(ctx, next) {
-		const { content, label } = ctx.request.body
+		const { title, content, label } = ctx.request.body
 		const momentId = ctx.params.momentId
-		if (!content || !label)
+		if (!title || !content || !label)
 			return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
 		try {
 			// 修改内容
-			await update(momentId, label, content)
+			await update(momentId, label, title, content)
 
 			ctx.body = '修改动态成功~'
 		} catch (error) {
