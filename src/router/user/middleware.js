@@ -6,6 +6,8 @@ const common = require('../../common/common-service')
 const md5password = require('../../util/md5password')
 const { AVATAR_PATH } = require('../../util/file-path')
 
+const { OKResult, OkResult } = require('../../app/responseInfo')
+
 class UserMiddleware {
 	// 用户验证
 	async verifyUser(ctx, next) {
@@ -58,7 +60,7 @@ class UserMiddleware {
 		await service.create(user)
 
 		// 返回结果
-		ctx.body = '注册成功'
+		ctx.body = new OkResult('注册成功')
 	}
 
 	// 读取头像
@@ -67,7 +69,18 @@ class UserMiddleware {
 		const result = await service.avatar(userId)
 
 		ctx.response.set('Content-Type', result.mimetype)
-		ctx.body = fs.createReadStream(`${AVATAR_PATH}/${result[0].filename}`)
+		ctx.body = new OkResult(
+			'读取成功',
+			fs.createReadStream(`${AVATAR_PATH}/${result[0].filename}`)
+		)
+	}
+
+	// 用户信息
+	async getUserDetail(ctx, next) {
+		const { userId } = ctx.params
+		const result = await service.userDetail(userId)
+
+		ctx.body = new OkResult('用户信息获取成功', result)
 	}
 }
 
