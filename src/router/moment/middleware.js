@@ -22,8 +22,8 @@ class MomentMiddleware {
 	// 发表动态
 	async createMoment(ctx, next) {
 		const id = ctx.user.id
-		const { content, label } = ctx.request.body
-		if (!content || !label)
+		const { title, content, label } = ctx.request.body
+		if (!title || !content || !label)
 			return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
 		// 校验content长度
@@ -33,7 +33,7 @@ class MomentMiddleware {
 		}
 
 		try {
-			const result = await insertMoment(id, content, label)
+			const result = await insertMoment(id, title, content, label)
 			ctx.body = { message: '发表动态成功', id: result.insertId }
 		} catch (error) {
 			ctx.body = '发表动态失败，标签id不存在：' + error.message

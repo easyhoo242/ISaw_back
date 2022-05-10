@@ -3,10 +3,15 @@ const { APP_URL, APP_PORT } = require('../../app/config')
 
 class MomentService {
 	// 发表动态
-	async insertMoment(id, content, label) {
+	async insertMoment(id, title, content, label) {
 		const statement =
-			'INSERT INTO moment (user_id, content, label_id) VALUES (?, ?, ?);'
-		const result = await connection.execute(statement, [id, content, label])
+			'INSERT INTO moment (user_id, title, content, label_id) VALUES (?, ?, ?, ?);'
+		const result = await connection.execute(statement, [
+			id,
+			title,
+			content,
+			label,
+		])
 
 		return result[0]
 	}
