@@ -1,15 +1,15 @@
 const Router = require('koa-router')
 
-const userRouter = new Router({prefix: '/user'})
+const userRouter = new Router({ prefix: '/users' })
 
 const {
-  verifyUser,
-  passwordHandle,
-  createUser,
-  getAvatar
+	verifyUser,
+	passwordHandle,
+	createUser,
+	getAvatar,
 } = require('./middleware')
 
 userRouter.post('/', verifyUser, passwordHandle, createUser) // 注册
-userRouter.get('/:userId/avatar', getAvatar)  // 查看头像
+userRouter.get('/:userId/avatar', getAvatar) // 查看头像
 
 module.exports = userRouter
