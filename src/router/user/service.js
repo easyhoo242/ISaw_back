@@ -27,7 +27,12 @@ class UserService {
 	}
 
 	async userDetail(id) {
-		const statement = `SELECT * FROM users WHERE id = ?;`
+		const statement = ` SELECT u.id, u.username, u.nickname, u.avatar_url avatar,
+                          (SELECT COUNT (*) FROM moment m WHERE m.user_id = u.id) moment_count,
+                          (SELECT COUNT (*) FROM moment_agree mg WHERE mg.user_id = u.id) agree,
+                          (SELECT COUNT (*) FROM comment c WHERE c.user_id = u.id) comment_count
+                        FROM users u 
+                        WHERE id = ?;`
 
 		const [result] = await connection.execute(statement, [id])
 

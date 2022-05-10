@@ -78,7 +78,7 @@ class UserMiddleware {
 	// 用户信息
 	async getUserDetail(ctx, next) {
 		const { userId } = ctx.params
-		const result = await service.userDetail(userId)
+		const [result] = await service.userDetail(userId)
 
 		ctx.body = new OkResult('用户信息获取成功', result)
 	}
