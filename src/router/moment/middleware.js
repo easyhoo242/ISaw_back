@@ -146,6 +146,14 @@ class MomentMiddleware {
 			console.log(err)
 		}
 	}
+
+	async getHotseeList(ctx) {
+		const statement = `SELECT * FROM moment ORDER BY recommend DESC, createTime ASC LIMIT 6;`
+
+		const [result] = await connection.execute(statement)
+
+		ctx.body = new OkResult('热门动态查询成功', result)
+	}
 }
 
 module.exports = new MomentMiddleware()
