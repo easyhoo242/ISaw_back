@@ -9,7 +9,9 @@ const {
 	update,
 	remove,
 	picture,
+	causeList,
 } = require('./service')
+
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
 const { PICTURE_PATH } = require('../../util/file-path')
 const {
@@ -17,6 +19,8 @@ const {
 	agree,
 	deleteAgree,
 } = require('../../common/common-service')
+
+const { OkResult } = require('../../app/responseInfo')
 
 class MomentMiddleware {
 	// 发表动态
@@ -127,6 +131,19 @@ class MomentMiddleware {
 			}
 		} catch (error) {
 			ctx.body = '点赞失败'
+		}
+	}
+
+	// 获取随便看看列表
+	async getCauseList(ctx) {
+		try {
+			const limit = Math.floor(Math.random() * (5 - 1 + 1)) + 1
+
+			const result = await causeList('6', limit.toString())
+
+			ctx.body = new OkResult('获取随便看看列表成功~ : ', result)
+		} catch (err) {
+			console.log(err)
 		}
 	}
 }

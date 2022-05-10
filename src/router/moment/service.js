@@ -138,6 +138,14 @@ class MomentService {
 		const [result] = await connection.execute(statement, [filename])
 		return result
 	}
+
+	async causeList(limit, offset) {
+		const statement = `SELECT * FROM moment LIMIT ? OFFSET ?;`
+
+		const [result] = await connection.execute(statement, [limit, offset])
+
+		return result
+	}
 }
 
 module.exports = new MomentService()

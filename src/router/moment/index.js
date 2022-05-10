@@ -1,4 +1,5 @@
 const Router = require('koa-router')
+const context = require('koa/lib/context')
 
 const {
 	verifyToken,
@@ -12,6 +13,7 @@ const {
 	removeMoment,
 	getPicture,
 	goAgree,
+	getCauseList,
 } = require('./middleware')
 
 const commentRouter = new Router({ prefix: '/moment' })
@@ -38,5 +40,7 @@ commentRouter.delete(
 
 commentRouter.get('/picture/:filename', getPicture) // 读取图片
 commentRouter.post('/:momentId/like', verifyToken, goAgree) // 点赞
+
+commentRouter.get('/cause/:id', getCauseList) //随便看看
 
 module.exports = commentRouter

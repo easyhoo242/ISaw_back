@@ -67,7 +67,7 @@ const errorHandle = (err, ctx) => {
 
 		default:
 			ctx.status = 404
-			ctx.body = new ErrResult('Not Found')
+			ctx.body = 'Not Found'
 	}
 }
 
