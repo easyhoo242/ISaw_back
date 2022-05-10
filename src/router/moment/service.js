@@ -33,7 +33,7 @@ class MomentService {
 	// 获取动态详情
 	async detail(id) {
 		const statement = `
-      SELECT m.id momentId, m.content content, m.createTime createTime, m.updateTime updateTime,
+      SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
         IF(COUNT(u.id),JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url), null) author,
         (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id) agree,
         (SELECT JSON_OBJECT('id', l.id, 'name', l.name) FROM label l WHERE l.id = m.label_id) label,
