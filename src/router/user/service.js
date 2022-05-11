@@ -26,6 +26,7 @@ class UserService {
 		return result
 	}
 
+	// 用户详情
 	async userDetail(id) {
 		const statement = ` SELECT u.id, u.username, u.nickname, u.avatar_url avatar,
                           (SELECT COUNT (*) FROM moment m WHERE m.user_id = u.id) moment_count,
@@ -34,9 +35,38 @@ class UserService {
                         FROM users u 
                         WHERE id = ?;`
 
+		const statementMomentidList = ` SELECT JSON_ARRAYAGG(id) idList FROM moment WHERE user_id = ?;`
+
+		const statementCommentCount = ` SELECT COUNT(1) count FROM comment WHERE moment_id = ?;`
+
+		const [[{ idList }]] = await connection.execute(statementMomentidList, [id])
+
+		let commentSum = 0
+
+		try {
+			for (let i = 0; i < idList.length; i++) {
+				const [[{ count }]] = await connection.execute(statementCommentCount, [
+					idList[i],
+				])
+
+				commentSum += count
+			}
+
+			console.log(commentSum)
+		} catch (error) {
+			console.log(error, '数据错了')
+		}
+
 		const [result] = await connection.execute(statement, [id])
 
-		return result
+		const finalResult = {
+			...result,
+			comment_count: commentSum,
+		}
+
+		console.log(finalResult)
+
+		return finalResult
 	}
 }
 

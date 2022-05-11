@@ -139,10 +139,10 @@ class UploadMiddleware {
 			}
 
 			// 更新用户信息的头像地址
-			await updateAvatarUrl(`${APP_URL}:3000/api/users/${id}/avatar`, id)
+			await updateAvatarUrl(`${APP_URL}:${APP_PORT}/users/${id}/avatar`, id)
 			ctx.body = {
 				data: '上传头像成功',
-				url: `${APP_URL}:3000/api/users/${id}/avatar`,
+				url: `${APP_URL}:${APP_PORT}/users/${id}/avatar`,
 			}
 		} catch (error) {
 			ctx.body = error

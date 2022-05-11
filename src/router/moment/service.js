@@ -149,7 +149,9 @@ class MomentService {
         m.createTime createTime,
         m.updateTime updateTime,
         JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
-        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) FROM picture p WHERE p.moment_id = m.id ) images,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) 
+          FROM picture p WHERE p.moment_id = m.id 
+        ) images,
         ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
         ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
         ( SELECT COUNT(*) FROM
