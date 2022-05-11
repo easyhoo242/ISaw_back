@@ -6,7 +6,7 @@ const common = require('../../common/common-service')
 const md5password = require('../../util/md5password')
 const { AVATAR_PATH } = require('../../util/file-path')
 
-const { OKResult, OkResult } = require('../../app/responseInfo')
+const { OkResult, ErrResult } = require('../../app/responseInfo')
 
 class UserMiddleware {
 	// 用户验证
@@ -78,9 +78,14 @@ class UserMiddleware {
 	// 用户信息
 	async getUserDetail(ctx, next) {
 		const { userId } = ctx.params
-		const [result] = await service.userDetail(userId)
 
-		ctx.body = new OkResult('用户信息获取成功', result)
+		try {
+			const result = await service.userDetail(userId)
+			ctx.body = new OkResult('用户信息获取成功', result)
+		} catch (error) {
+			console.log(error)
+			ctx.body = new ErrResult(error)
+		}
 	}
 }
 

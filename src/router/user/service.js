@@ -66,15 +66,13 @@ class UserService {
 			console.log(error, '数据错了')
 		}
 
-		const [result] = await connection.execute(statement, [id])
+		const [[result]] = await connection.execute(statement, [id])
 
 		const finalResult = {
 			...result,
 			comment_count: commentSum,
 			agree_count: agreeSum,
 		}
-
-		console.log(finalResult)
 
 		return finalResult
 	}
