@@ -71,13 +71,22 @@ class MomentService {
       LIMIT ?, ?
     `
 		try {
-			const result = await connection.execute(statement, [
+			const [result] = await connection.execute(statement, [
 				id,
 				label,
 				offset,
 				limit,
 			])
-			return result[0]
+
+			const [[{ momentCount }]] = await connection.execute(
+				`SELECT COUNT(1) momentCount FROM moment WHERE label_id = ?`,
+				[label]
+			)
+
+			return {
+				list: result,
+				momentCount,
+			}
 		} catch (error) {
 			return error
 		}
@@ -99,12 +108,22 @@ class MomentService {
 				offset,
 				limit,
 			])
-			return result
+
+			const [[{ momentCount }]] = await connection.execute(
+				`SELECT COUNT(1) momentCount FROM moment  WHERE user_id = ?;`,
+				[userId]
+			)
+
+			return {
+				list: result,
+				momentCount,
+			}
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
+	// 全部动态
 	async listAll(offset, limit) {
 		const statement = `
       SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
