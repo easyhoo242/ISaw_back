@@ -14,6 +14,7 @@ const {
 	goAgree,
 	getCauseList,
 	getHotseeList,
+	getLatelyMomentList,
 } = require('./middleware')
 
 const commentRouter = new Router({ prefix: '/moment' })
@@ -42,6 +43,7 @@ commentRouter.get('/picture/:filename', getPicture) // 读取图片
 commentRouter.post('/:momentId/like', verifyToken, goAgree) // 点赞
 
 commentRouter.get('/cause/:id', getCauseList) //随便看看
-commentRouter.get('/hotsee/:id', getHotseeList) //随便看看
+commentRouter.get('/hotsee/:id', getHotseeList) //热门文章
+commentRouter.get('/lately/:id', getLatelyMomentList) //最近发表
 
 module.exports = commentRouter

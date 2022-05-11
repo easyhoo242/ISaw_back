@@ -172,6 +172,17 @@ class MomentMiddleware {
 			console.log(error)
 		}
 	}
+
+	// 获取最近发表动态列表
+	async getLatelyMomentList(ctx) {
+		try {
+			const result = await hotSeeList('6')
+
+			ctx.body = new OkResult('热门动态查询成功', result)
+		} catch (error) {
+			console.log(error)
+		}
+	}
 }
 
 module.exports = new MomentMiddleware()
