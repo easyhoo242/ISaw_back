@@ -218,6 +218,34 @@ class MomentService {
 
 		return result
 	}
+
+	// 热门文章列表
+	async hotSeeList(limit) {
+		const statement = `
+      SELECT
+        m.id momentId,
+        m.title title,
+        m.content content,
+        m.createTime createTime,
+        m.updateTime updateTime,
+        JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) 
+          FROM picture p WHERE p.moment_id = m.id 
+        ) images,
+        ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
+        ( SELECT JSON_OBJECT( 'id', l.id, 'name', l.NAME ) FROM label l WHERE l.id = m.label_id ) label 
+      FROM
+        moment m
+      LEFT JOIN users u ON m.user_id = u.id
+      ORDER BY agree DESC, commentCount DESC 
+      LIMIT ?;
+    `
+
+		const [result] = await connection.execute(statement, [limit])
+
+		return result
+	}
 }
 
 module.exports = new MomentService()

@@ -11,6 +11,7 @@ const {
 	remove,
 	picture,
 	causeList,
+	hotSeeList,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -163,11 +164,13 @@ class MomentMiddleware {
 
 	// 获取热门动态列表
 	async getHotseeList(ctx) {
-		const statement = `SELECT * FROM moment ORDER BY recommend DESC, createTime ASC LIMIT 6;`
+		try {
+			const result = await hotSeeList('3')
 
-		const [result] = await connection.execute(statement)
-
-		ctx.body = new OkResult('热门动态查询成功', result)
+			ctx.body = new OkResult('热门动态查询成功', result)
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 
