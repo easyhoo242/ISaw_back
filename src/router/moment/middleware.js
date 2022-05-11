@@ -137,9 +137,11 @@ class MomentMiddleware {
 	// 获取随便看看列表
 	async getCauseList(ctx) {
 		try {
-			const limit = Math.floor(Math.random() * (5 - 1 + 1)) + 1
+			// const offset = (Math.floor(Math.random() * (5 - 1 + 1)) + 1).toString()
+			const offset = '0'
 
-			const result = await causeList('6', limit.toString())
+			// limit offset
+			const result = await causeList('6', offset)
 
 			ctx.body = new OkResult('获取随便看看列表成功~ : ', result)
 		} catch (err) {
@@ -147,6 +149,7 @@ class MomentMiddleware {
 		}
 	}
 
+	// 获取热门动态列表
 	async getHotseeList(ctx) {
 		const statement = `SELECT * FROM moment ORDER BY recommend DESC, createTime ASC LIMIT 6;`
 
