@@ -57,7 +57,7 @@ class MomentService {
 	async listInLabel(id, label, order, offset, limit) {
 		// console.log(id, label, order, offset, limit);
 		const statement = `
-      SELECT m.id momentId, m.content content, m.createTime createTime, m.updateTime updateTime,
+      SELECT m.id momentId,m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
         JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) author,
         (SELECT JSON_ARRAYAGG(CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')) FROM picture p WHERE p.moment_id = m.id) images,
         (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
@@ -86,7 +86,7 @@ class MomentService {
 	// 根据用户id获取动态列表
 	async listInUser(userId, offset, limit) {
 		const statement = `
-      SELECT m.id momentId, m.content content, m.createTime createTime, m.updateTime updateTime,
+      SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
         (SELECT JSON_ARRAYAGG(CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')) FROM picture p WHERE p.moment_id = m.id) images
       FROM moment m
       WHERE m.user_id = ?
@@ -101,7 +101,36 @@ class MomentService {
 			])
 			return result
 		} catch (error) {
-			context.body = error
+			console.log(error)
+		}
+	}
+
+	async listAll(offset, limit) {
+		const statement = `
+      SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
+        ( SELECT 
+            JSON_ARRAYAGG(
+              CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')
+            ) 
+          FROM picture p WHERE p.moment_id = m.id
+        ) images
+      FROM moment m
+      ORDER BY m.createTime DESC
+      LIMIT ?, ?
+    `
+		try {
+			const [result] = await connection.execute(statement, [offset, limit])
+
+			const [[{ momentCount }]] = await connection.execute(
+				`SELECT COUNT(1) momentCount FROM moment;`
+			)
+
+			return {
+				list: result,
+				momentCount,
+			}
+		} catch (error) {
+			console.log(error)
 		}
 	}
 

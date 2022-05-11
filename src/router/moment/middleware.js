@@ -6,6 +6,7 @@ const {
 	detail,
 	listInLabel,
 	listInUser,
+	listAll,
 	update,
 	remove,
 	picture,
@@ -53,7 +54,9 @@ class MomentMiddleware {
 
 	// 获取动态列表
 	async momentList(ctx, next) {
-		const { label } = ctx.query
+		const { label, userId } = ctx.query
+
+		console.log(label, userId)
 		if (label) {
 			// 根据label获取动态列表
 			let { order = '0', offset = '0', limit = '10', userId = '' } = ctx.query
@@ -68,13 +71,22 @@ class MomentMiddleware {
 
 			const result = await listInLabel(userId, label, order, offset, limit)
 			ctx.body = result
-		} else {
+		} else if (userId) {
 			// 根据用户id获取动态列表
 			const { userId, offset = '0', limit = '10' } = ctx.query
 			if (!userId) return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
 			const result = await listInUser(userId, offset, limit)
 			ctx.body = result
+		} else {
+			try {
+				const { offset = '0', limit = '10' } = ctx.query
+
+				const result = await listAll(offset, limit)
+				ctx.body = result
+			} catch (error) {
+				console.log(error)
+			}
 		}
 	}
 
