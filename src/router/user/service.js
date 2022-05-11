@@ -37,22 +37,31 @@ class UserService {
 
 		const statementMomentidList = ` SELECT JSON_ARRAYAGG(id) idList FROM moment WHERE user_id = ?;`
 
-		const statementCommentCount = ` SELECT COUNT(1) count FROM comment WHERE moment_id = ?;`
+		const statementCommentCount = ` SELECT COUNT(1) CommentCount FROM comment WHERE moment_id = ?;`
+
+		const statementAgreeCount = ` SELECT COUNT(1) AgreeCount FROM moment_agree WHERE moment_id = ?;`
 
 		const [[{ idList }]] = await connection.execute(statementMomentidList, [id])
 
 		let commentSum = 0
+		let agreeSum = 0
 
 		try {
 			for (let i = 0; i < idList.length; i++) {
-				const [[{ count }]] = await connection.execute(statementCommentCount, [
-					idList[i],
-				])
+				// 评论总数
+				const [[{ CommentCount }]] = await connection.execute(
+					statementCommentCount,
+					[idList[i]]
+				)
+				commentSum += CommentCount
 
-				commentSum += count
+				// 点赞总数
+				const [[{ AgreeCount }]] = await connection.execute(
+					statementAgreeCount,
+					[idList[i]]
+				)
+				agreeSum += AgreeCount
 			}
-
-			console.log(commentSum)
 		} catch (error) {
 			console.log(error, '数据错了')
 		}
@@ -62,6 +71,7 @@ class UserService {
 		const finalResult = {
 			...result,
 			comment_count: commentSum,
+			agree_count: agreeSum,
 		}
 
 		console.log(finalResult)
