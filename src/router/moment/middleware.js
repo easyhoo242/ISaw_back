@@ -54,12 +54,14 @@ class MomentMiddleware {
 
 	// 获取动态列表
 	async momentList(ctx, next) {
-		const { label, userId } = ctx.query
+		const { label, userId, offset = '0', limit = '10' } = ctx.query
+
+		const page = offset != '1' ? offset - 1 + '0' : '0'
 
 		console.log(label, userId)
 		if (label) {
 			// 根据label获取动态列表
-			let { order = '0', offset = '0', limit = '10', userId = '' } = ctx.query
+			let { order = '0', userId = '' } = ctx.query
 			// （0为最热，1为最新）
 			switch (order) {
 				case '0':
@@ -69,20 +71,18 @@ class MomentMiddleware {
 					order = 'm.updateTime'
 			}
 
-			const result = await listInLabel(userId, label, order, offset, limit)
+			const result = await listInLabel(userId, label, order, page, limit)
 			ctx.body = result
 		} else if (userId) {
 			// 根据用户id获取动态列表
-			const { userId, offset = '0', limit = '10' } = ctx.query
+			const { userId } = ctx.query
 			if (!userId) return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
-			const result = await listInUser(userId, offset, limit)
+			const result = await listInUser(userId, page, limit)
 			ctx.body = result
 		} else {
 			try {
-				const { offset = '0', limit = '10' } = ctx.query
-
-				const result = await listAll(offset, limit)
+				const result = await listAll(page, limit)
 				ctx.body = result
 			} catch (error) {
 				console.log(error)
