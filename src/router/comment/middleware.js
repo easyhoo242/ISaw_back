@@ -63,7 +63,7 @@ class CommentMiddleware {
 				default:
 					order = 'c.createTime'
 			}
-			const result = await listInMoment(userId, momentId, order, offset, limit)
+			const result = await listInMoment(momentId, order, offset, limit)
 
 			ctx.body = new OkResult('一级评论获取成功', result)
 		} else if (commentId) {

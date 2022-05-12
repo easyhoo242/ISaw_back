@@ -34,24 +34,22 @@ class CommentService {
 	}
 
 	// 根据动态id获取该动态的评论列表
-	async listInMoment(userId, momentId, order, offset, limit) {
+	async listInMoment(momentId, order, offset, limit) {
 		const statement = `
       SELECT c.id, c.content, c.createTime, c.moment_id momentId, c.comment_id commentId,
         JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) user,
         (SELECT COUNT(*) FROM comment_agree cg WHERE cg.comment_id = c.id) agree,
-        (SELECT COUNT(*) FROM comment_agree cg WHERE cg.comment_id = c.id AND cg.user_id = ?) isAgree,
         (SELECT COUNT(*) FROM comment c2 WHERE c2.comment_id = c.id) child_count
       FROM comment c LEFT JOIN users u ON c.user_id = u.id
       WHERE c.moment_id = ? AND c.comment_id IS NULL
       ORDER BY ${order} DESC
-      LIMIT ?, ?
+      LIMIT ? OFFSET ?
     `
 		try {
 			const [result] = await connection.execute(statement, [
-				userId,
 				momentId,
-				offset,
 				limit,
+				offset,
 			])
 
 			const [[{ commentCount }]] = await connection.execute(
