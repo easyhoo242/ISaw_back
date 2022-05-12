@@ -25,7 +25,7 @@ class CommentMiddleware {
 			return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
 		const result = await pub(id, content, momentId)
-		ctx.body = result
+		ctx.body = new OkResult('评论发表成功~', result)
 	}
 
 	// 回复评论
@@ -51,9 +51,7 @@ class CommentMiddleware {
 
 	// 获取动态的评论列表
 	async commentList(ctx, next) {
-		const { momentId, commentId, offset = '1', limit = '10' } = ctx.query
-
-		const page = offset != '1' ? offset - 1 + '0' : '0'
+		const { momentId, commentId, offset = '1', limit = '5' } = ctx.query
 
 		if (momentId) {
 			// 根据动态获取一级评论
@@ -65,7 +63,7 @@ class CommentMiddleware {
 				default:
 					order = 'c.createTime'
 			}
-			const result = await listInMoment(userId, momentId, order, page, limit)
+			const result = await listInMoment(userId, momentId, order, offset, limit)
 
 			ctx.body = new OkResult('一级评论获取成功', result)
 		} else if (commentId) {
@@ -75,10 +73,10 @@ class CommentMiddleware {
 			ctx.body = new OkResult('二级评论获取成功', result)
 		} else {
 			// 根据用户id获取
-			const { id, page = '0', limit = '10' } = ctx.query
+			const { id } = ctx.query
 			if (!id) return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
-			const result = await listInUser(id, page, limit)
+			const result = await listInUser(id, offset, limit)
 			ctx.body = new OkResult('用户发表的评论获取成功', result)
 		}
 
