@@ -82,11 +82,11 @@ class CommentService {
         (SELECT COUNT(*) FROM comment_agree cg WHERE cg.comment_id = c.id) agree,
         (SELECT COUNT(*) FROM comment_agree cg WHERE cg.comment_id = c.id AND cg.user_id = ?) isAgree
       FROM comment c LEFT JOIN users u ON c.user_id = u.id
-      WHERE c.comment_id = ?
+      WHERE c.comment_id IS NOT NULL
       ORDER BY c.createTime ASC
     `
 		try {
-			const [result] = await connection.execute(statement, [userId, commentId])
+			const [result] = await connection.execute(statement, [userId])
 			return result
 		} catch (error) {
 			return error.message
