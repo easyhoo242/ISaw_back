@@ -51,10 +51,13 @@ class CommentMiddleware {
 
 	// 获取动态的评论列表
 	async commentList(ctx, next) {
-		const { momentId, commentId } = ctx.query
+		const { momentId, commentId, offset = '1', limit = '10' } = ctx.query
+
+		const page = offset != '1' ? offset - 1 + '0' : '0'
+
 		if (momentId) {
 			// 根据动态获取一级评论
-			let { order = '0', offset = '0', limit = '10', userId = '' } = ctx.query
+			let { order = '0', userId = '' } = ctx.query
 			switch (order) {
 				case '1':
 					order = 'agree'
@@ -62,21 +65,21 @@ class CommentMiddleware {
 				default:
 					order = 'c.createTime'
 			}
-			const result = await listInMoment(userId, momentId, order, offset, limit)
+			const result = await listInMoment(userId, momentId, order, page, limit)
 
-			ctx.body = result
+			ctx.body = new OkResult('一级评论获取成功', result)
 		} else if (commentId) {
 			// 根据评论id获取二级评论（回复）
 			const { userId = '' } = ctx.query
 			const result = await listInComment(userId, commentId)
-			ctx.body = result
+			ctx.body = new OkResult('二级评论获取成功', result)
 		} else {
 			// 根据用户id获取
-			const { id, offset = '0', limit = '10' } = ctx.query
+			const { id, page = '0', limit = '10' } = ctx.query
 			if (!id) return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
-			const result = await listInUser(id, offset, limit)
-			ctx.body = result
+			const result = await listInUser(id, page, limit)
+			ctx.body = new OkResult('用户发表的评论获取成功', result)
 		}
 
 		// else if(userId){  // 根据用户id获取

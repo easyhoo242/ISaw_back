@@ -22,7 +22,7 @@ const {
 	deleteAgree,
 } = require('../../common/common-service')
 
-const { OkResult } = require('../../app/responseInfo')
+const { OkResult, ErrResult } = require('../../app/responseInfo')
 
 class MomentMiddleware {
 	// 发表动态
@@ -138,13 +138,13 @@ class MomentMiddleware {
 			const result = await agreeExist(id, momentId, 'moment')
 			if (!result.length) {
 				await agree(id, momentId, 'moment')
-				ctx.body = '点赞成功'
+				ctx.body = new OkResult('点赞成功')
 			} else {
 				await deleteAgree(id, momentId, 'moment')
-				ctx.body = '取消点赞'
+				ctx.body = new OkResult('取消点赞')
 			}
 		} catch (error) {
-			ctx.body = '点赞失败'
+			ctx.body = new ErrResult('点赞失败')
 		}
 	}
 

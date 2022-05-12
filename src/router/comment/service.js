@@ -33,7 +33,7 @@ class CommentService {
 		}
 	}
 
-	// 根据动态获取该动态的评论列表
+	// 根据动态id获取该动态的评论列表
 	async listInMoment(userId, momentId, order, offset, limit) {
 		const statement = `
       SELECT c.id, c.content, c.createTime, c.moment_id momentId, c.comment_id commentId,
@@ -53,7 +53,22 @@ class CommentService {
 				offset,
 				limit,
 			])
-			return result
+
+			const [[{ commentCount }]] = await connection.execute(
+				`SELECT COUNT(*) commentCount FROM comment WHERE moment_id = ? ;`,
+				[momentId]
+			)
+
+			const [[{ commentCountNotNull }]] = await connection.execute(
+				`SELECT COUNT(*) commentCount FROM comment WHERE moment_id = ? AND comment_id is NULL;`,
+				[momentId]
+			)
+
+			return {
+				list: result,
+				commentCount,
+				commentCountNotNull,
+			}
 		} catch (error) {
 			return error.message
 		}
@@ -109,6 +124,7 @@ class CommentService {
 		}
 	}
 
+	// 最新评论
 	async LatelyComment() {
 		const statement = `
     SELECT c.id, c.content, c.createTime, c.moment_id momentId, c.comment_id commentId,
