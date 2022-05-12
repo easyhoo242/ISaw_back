@@ -35,9 +35,9 @@ class CommentMiddleware {
 		const { commentId } = ctx.params
 		try {
 			await reply(id, content, momentId, commentId)
-			ctx.body = '回复成功'
+			ctx.body = new OkResult('回复成功')
 		} catch (error) {
-			ctx.body = error
+			ctx.body = new ErrResult(error)
 		}
 	}
 
