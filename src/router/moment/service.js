@@ -82,9 +82,15 @@ class MomentService {
 				[label]
 			)
 
+			const [[labelInfo]] = await connection.execute(
+				`SELECT id, name FROM label  WHERE id = ?;`,
+				[label]
+			)
+
 			return {
 				list: result,
 				momentCount,
+				labelInfo,
 			}
 		} catch (error) {
 			return error
