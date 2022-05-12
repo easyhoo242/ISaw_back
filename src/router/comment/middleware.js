@@ -14,7 +14,7 @@ const {
 	deleteAgree,
 } = require('../../common/common-service')
 
-const { OkResult } = require('../../app/responseInfo')
+const { OkResult, ErrResult } = require('../../app/responseInfo')
 
 class CommentMiddleware {
 	// 发表评论
@@ -46,7 +46,7 @@ class CommentMiddleware {
 		const { commentId } = ctx.params
 		const result = await remove(commentId)
 
-		ctx.body = result
+		ctx.body = new OkResult('删除成功~', result)
 	}
 
 	// 获取动态的评论列表

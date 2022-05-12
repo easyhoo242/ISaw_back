@@ -60,7 +60,7 @@ class CommentService {
 			)
 
 			const [[{ commentCountNotNull }]] = await connection.execute(
-				`SELECT COUNT(*) commentCount FROM comment WHERE moment_id = ? AND comment_id is NULL;`,
+				`SELECT COUNT(1) commentCountNotNull FROM comment WHERE moment_id = ? AND comment_id is NULL;`,
 				[momentId]
 			)
 
