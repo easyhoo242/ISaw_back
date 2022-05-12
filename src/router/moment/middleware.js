@@ -165,7 +165,7 @@ class MomentMiddleware {
 	// 获取热门动态列表
 	async getHotseeList(ctx) {
 		try {
-			const result = await hotSeeList('3')
+			const result = await hotSeeList('6')
 
 			ctx.body = new OkResult('热门动态查询成功', result)
 		} catch (error) {

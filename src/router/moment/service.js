@@ -55,7 +55,6 @@ class MomentService {
 
 	// 获取label获取动态列表
 	async listInLabel(id, label, order, offset, limit) {
-		// console.log(id, label, order, offset, limit);
 		const statement = `
       SELECT m.id momentId,m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
         JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) author,
@@ -247,7 +246,7 @@ class MomentService {
 		return result
 	}
 
-  // 最近发表动态接口
+	// 最近发表动态接口
 	async latelyMomentList(limit) {
 		const statement = `
       SELECT
