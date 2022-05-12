@@ -13,6 +13,7 @@ const {
 	commentList,
 	goAgree,
 	commentDetailList,
+	getLatelyComment,
 } = require('./middleware')
 
 const commentRouter = new Router({ prefix: '/comment' })
@@ -35,6 +36,8 @@ commentRouter.delete(
 
 commentRouter.get('/', commentList) // 获取动态的评论列表
 // commentRouter.get('/:commentId', commentDetailList) // 获取动态某个评论的回复列表
+
+commentRouter.get('/lately/:id', getLatelyComment) //获取最新评论列表
 
 commentRouter.post('/:commentId/like', verifyToken, goAgree) // 点赞
 

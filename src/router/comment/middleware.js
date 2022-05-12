@@ -5,6 +5,7 @@ const {
 	listInMoment,
 	listInUser,
 	listInComment,
+	LatelyComment,
 } = require('./service')
 const { PARAMS_ERROR } = require('../../util/error-type')
 const {
@@ -12,6 +13,8 @@ const {
 	agree,
 	deleteAgree,
 } = require('../../common/common-service')
+
+const { OkResult } = require('../../app/responseInfo')
 
 class CommentMiddleware {
 	// 发表评论
@@ -113,6 +116,15 @@ class CommentMiddleware {
 		} catch (error) {
 			ctx.body = '点赞失败'
 		}
+	}
+
+	// 最近评论列表
+
+	async getLatelyComment(ctx) {
+		console.log(123)
+		const result = await LatelyComment()
+
+		ctx.body = new OkResult('获取最新评论接口列表~', result)
 	}
 }
 

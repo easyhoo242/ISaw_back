@@ -108,6 +108,23 @@ class CommentService {
 			return error.message
 		}
 	}
+
+	async LatelyComment() {
+		const statement = `
+    SELECT c.id, c.content, c.createTime, c.moment_id momentId, c.comment_id commentId,
+      JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) user,
+      (SELECT COUNT(*) FROM comment_agree cg WHERE cg.comment_id = c.id) agree,
+      (SELECT COUNT(*) FROM comment c2 WHERE c2.comment_id = c.id) child_count
+    FROM comment c LEFT JOIN users u ON c.user_id = u.id
+    ORDER BY createTime DESC
+    `
+		try {
+			const [result] = await connection.execute(statement)
+			return result
+		} catch (error) {
+			return error.message
+		}
+	}
 }
 
 module.exports = new CommentService()
