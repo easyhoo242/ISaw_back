@@ -48,6 +48,7 @@ class MomentMiddleware {
 
 	// 获取动态详情
 	async momentDetail(ctx, next) {
+		console.log(123)
 		const { momentId } = ctx.params
 		const result = await detail(momentId)
 		ctx.body = result
