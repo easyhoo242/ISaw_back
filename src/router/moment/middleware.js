@@ -120,8 +120,6 @@ class MomentMiddleware {
 		}
 
 		if (keyBoard) {
-			console.log('momentListSearch 1')
-
 			const result = await momentListSearchHasKey(
 				keyBoard,
 				label,
@@ -132,8 +130,6 @@ class MomentMiddleware {
 
 			ctx.body = new OkResult('查询成功~', result)
 		} else {
-			console.log('momentListSearch 2')
-
 			const result = await momentListSearchHasNoKey(label, order, limit, offset)
 
 			ctx.body = new OkResult('查询成功~', result)

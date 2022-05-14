@@ -323,7 +323,7 @@ class MomentService {
 			const [result] = await connection.execute(statement, [limit, offset])
 
 			const statement2 = `
-        SELECT COUNT(1) commentCount 
+        SELECT COUNT(1) momentCount 
         FROM moment 
         WHERE 
           content LIKE '%${keyBoard}%' 
@@ -331,11 +331,11 @@ class MomentService {
           OR title LIKE '%${keyBoard}%' 
           AND label_id = ${label} ;`
 
-			const [[{ commentCount }]] = await connection.execute(statement2, [label])
+			const [[{ momentCount }]] = await connection.execute(statement2, [label])
 
 			return {
 				list: result,
-				commentCount,
+				momentCount,
 			}
 		} catch (error) {
 			console.log(error)
@@ -371,15 +371,13 @@ class MomentService {
 		try {
 			const [result] = await connection.execute(statement, [limit, offset])
 
-			console.log(result)
+			const statement2 = `SELECT COUNT(1) momentCount FROM moment WHERE label_id = ?;`
 
-			const statement2 = `SELECT COUNT(1) commentCount FROM moment WHERE label_id = ?;`
-
-			const [[{ commentCount }]] = await connection.execute(statement2, [label])
+			const [[{ momentCount }]] = await connection.execute(statement2, [label])
 
 			return {
 				list: result,
-				commentCount,
+				momentCount,
 			}
 		} catch (error) {
 			console.log(error)
