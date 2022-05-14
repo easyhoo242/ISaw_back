@@ -98,11 +98,11 @@ class MomentMiddleware {
 
 	async momentListSearch(ctx) {
 		const {
-			keyBoard = '',
+			keyBoard = '我',
 			label = '1',
-			sort = '0',
-			offset = '10',
-			limit = '0',
+			sort = '1',
+			limit = '10',
+			offset = '0',
 		} = ctx.query
 
 		let order = 'm.updateTime'
@@ -126,15 +126,15 @@ class MomentMiddleware {
 				keyBoard,
 				label,
 				order,
-				offset,
-				limit
+				limit,
+				offset
 			)
 
 			ctx.body = new OkResult('查询成功~', result)
 		} else {
 			console.log('momentListSearch 2')
 
-			const result = await momentListSearchHasNoKey(label, order, offset, limit)
+			const result = await momentListSearchHasNoKey(label, order, limit, offset)
 
 			ctx.body = new OkResult('查询成功~', result)
 		}

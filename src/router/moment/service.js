@@ -290,7 +290,7 @@ class MomentService {
 	}
 
 	// 文章列表搜索接口
-	async momentListSearchHasKey(keyBoard, label, order, offset, limit) {
+	async momentListSearchHasKey(keyBoard, label, order, limit, offset) {
 		const statement = `
       SELECT
         m.id momentId,
@@ -320,7 +320,7 @@ class MomentService {
     `
 
 		try {
-			const [result] = await connection.execute(statement, [offset, limit])
+			const [result] = await connection.execute(statement, [limit, offset])
 
 			const statement2 = `
         SELECT COUNT(1) commentCount 
@@ -343,7 +343,7 @@ class MomentService {
 		}
 	}
 
-	async momentListSearchHasNoKey(label, order, offset, limit) {
+	async momentListSearchHasNoKey(label, order, limit, offset) {
 		console.log(arguments)
 		const statement = `
       SELECT
@@ -362,18 +362,16 @@ class MomentService {
         moment m
         LEFT JOIN users u ON m.user_id = u.id
         LEFT JOIN label l ON l.id = m.label_id 
-      WHERE l.id = ?
+      WHERE l.id = ${label}
       ORDER BY
         ${order} DESC,
         m.updateTime DESC
-      LIMIT ? OFFSET ?
+      LIMIT ? OFFSET ?;
     `
 		try {
-			const [result] = await connection.execute(statement, [
-				label,
-				offset,
-				limit,
-			])
+			const [result] = await connection.execute(statement, [limit, offset])
+
+			console.log(result)
 
 			const statement2 = `SELECT COUNT(1) commentCount FROM moment WHERE label_id = ?;`
 
