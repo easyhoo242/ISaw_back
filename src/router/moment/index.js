@@ -15,35 +15,38 @@ const {
 	getCauseList,
 	getHotseeList,
 	getLatelyMomentList,
+	momentListSearch,
 } = require('./middleware')
 
-const commentRouter = new Router({ prefix: '/moment' })
+const momentRouter = new Router({ prefix: '/moment' })
 
-commentRouter.post('/', verifyToken, createMoment) // 发表动态
+momentRouter.post('/', verifyToken, createMoment) // 发表动态
 
-commentRouter.get('/:momentId', momentDetail) // 动态详情
+momentRouter.get('/:momentId', momentDetail) // 动态详情
 
-commentRouter.get('/', momentList) // 动态列表
+momentRouter.get('/', momentList) // 动态列表
 
-commentRouter.patch(
+momentRouter.patch(
 	'/:momentId',
 	verifyToken,
 	verifyPermission('moment'),
 	updateMoment
 ) // 修改动态
 
-commentRouter.delete(
+momentRouter.delete(
 	'/:momentId',
 	verifyToken,
 	verifyPermission('moment'),
 	removeMoment
 ) // 删除动态
 
-commentRouter.get('/picture/:filename', getPicture) // 读取图片
-commentRouter.post('/:momentId/like', verifyToken, goAgree) // 点赞
+momentRouter.get('/picture/:filename', getPicture) // 读取图片
+momentRouter.post('/:momentId/like', verifyToken, goAgree) // 点赞
 
-commentRouter.get('/cause/:id', getCauseList) //随便看看
-commentRouter.get('/hotsee/:id', getHotseeList) //热门文章
-commentRouter.get('/lately/:id', getLatelyMomentList) //最近发表
+momentRouter.get('/cause/:id', getCauseList) //随便看看
+momentRouter.get('/hotsee/:id', getHotseeList) //热门文章
+momentRouter.get('/lately/:id', getLatelyMomentList) //最近发表
 
-module.exports = commentRouter
+momentRouter.get('/search/:id', momentListSearch) //搜索列表
+
+module.exports = momentRouter

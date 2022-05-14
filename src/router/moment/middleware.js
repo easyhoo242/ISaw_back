@@ -12,6 +12,8 @@ const {
 	picture,
 	causeList,
 	hotSeeList,
+	momentListSearchHasKey,
+	momentListSearchHasNoKey,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -65,8 +67,11 @@ class MomentMiddleware {
 			let { order = '0', userId = '' } = ctx.query
 			// （0为最热，1为最新）
 			switch (order) {
-				case '0':
+				case '1':
 					order = 'agree'
+					break
+				case '2':
+					order = 'commentCount'
 					break
 				default:
 					order = 'm.updateTime'
@@ -88,6 +93,50 @@ class MomentMiddleware {
 			} catch (error) {
 				console.log(error)
 			}
+		}
+	}
+
+	async momentListSearch(ctx) {
+		const {
+			keyBoard = '',
+			label = '1',
+			sort = '0',
+			offset = '10',
+			limit = '0',
+		} = ctx.query
+
+		let order = 'm.updateTime'
+
+		// （1为点赞最多，2为评论最多， 0为最新）
+		switch (sort) {
+			case '1':
+				order = 'agree'
+				break
+			case '2':
+				order = 'commentCount'
+				break
+			default:
+				order = 'm.updateTime'
+		}
+
+		if (keyBoard) {
+			console.log('momentListSearch 1')
+
+			const result = await momentListSearchHasKey(
+				keyBoard,
+				label,
+				order,
+				offset,
+				limit
+			)
+
+			ctx.body = new OkResult('查询成功~', result)
+		} else {
+			console.log('momentListSearch 2')
+
+			const result = await momentListSearchHasNoKey(label, order, offset, limit)
+
+			ctx.body = new OkResult('查询成功~', result)
 		}
 	}
 

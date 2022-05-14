@@ -288,6 +288,106 @@ class MomentService {
 
 		return result
 	}
+
+	// 文章列表搜索接口
+	async momentListSearchHasKey(keyBoard, label, order, offset, limit) {
+		const statement = `
+      SELECT
+        m.id momentId,
+        m.title title,
+        m.content content,
+        m.createTime createTime,
+        m.updateTime updateTime,
+        JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) FROM picture p WHERE p.moment_id = m.id ) images,
+        ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) isAgree,
+        ( SELECT JSON_OBJECT( 'id', l.id, 'name', l.NAME ) FROM label l WHERE l.id = m.label_id ) label 
+      FROM
+        moment m
+        LEFT JOIN users u ON m.user_id = u.id
+        LEFT JOIN label l ON l.id = m.label_id 
+          WHERE
+          	m.content LIKE '%${keyBoard}%' 
+          	AND l.id = ${label}
+          	OR m.title LIKE '%${keyBoard}%' 
+          	AND l.id = ${label}
+      ORDER BY
+        ${order} DESC,
+        m.updateTime DESC
+      LIMIT ? OFFSET ?
+    `
+
+		try {
+			const [result] = await connection.execute(statement, [offset, limit])
+
+			const statement2 = `
+        SELECT COUNT(1) commentCount 
+        FROM moment 
+        WHERE 
+          content LIKE '%${keyBoard}%' 
+          AND label_id = ${label}
+          OR title LIKE '%${keyBoard}%' 
+          AND label_id = ${label} ;`
+
+			const [[{ commentCount }]] = await connection.execute(statement2, [label])
+
+			return {
+				list: result,
+				commentCount,
+			}
+		} catch (error) {
+			console.log(error)
+			return error
+		}
+	}
+
+	async momentListSearchHasNoKey(label, order, offset, limit) {
+		console.log(arguments)
+		const statement = `
+      SELECT
+        m.id momentId,
+        m.title title,
+        m.content content,
+        m.createTime createTime,
+        m.updateTime updateTime,
+        JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) FROM picture p WHERE p.moment_id = m.id ) images,
+        ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) isAgree,
+        ( SELECT JSON_OBJECT( 'id', l.id, 'name', l.NAME ) FROM label l WHERE l.id = m.label_id ) label 
+      FROM
+        moment m
+        LEFT JOIN users u ON m.user_id = u.id
+        LEFT JOIN label l ON l.id = m.label_id 
+      WHERE l.id = ?
+      ORDER BY
+        ${order} DESC,
+        m.updateTime DESC
+      LIMIT ? OFFSET ?
+    `
+		try {
+			const [result] = await connection.execute(statement, [
+				label,
+				offset,
+				limit,
+			])
+
+			const statement2 = `SELECT COUNT(1) commentCount FROM moment WHERE label_id = ?;`
+
+			const [[{ commentCount }]] = await connection.execute(statement2, [label])
+
+			return {
+				list: result,
+				commentCount,
+			}
+		} catch (error) {
+			console.log(error)
+			return error
+		}
+	}
 }
 
 module.exports = new MomentService()
