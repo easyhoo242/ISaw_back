@@ -138,13 +138,14 @@ class MomentService {
 	async listAll(offset, limit) {
 		const statement = `
       SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
-        ( SELECT 
-            JSON_ARRAYAGG(
-              CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')
-            ) 
-          FROM picture p WHERE p.moment_id = m.id
-        ) images
-      FROM moment m
+        JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) author,
+        (SELECT JSON_ARRAYAGG(CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')) FROM picture p WHERE p.moment_id = m.id) images,
+        (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
+        (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id) agree,
+        (SELECT JSON_OBJECT('id', l.id, 'name', l.name) FROM label l WHERE l.id = m.label_id) label
+      FROM moment m LEFT JOIN users u
+      ON m.user_id = u.id
+
       ORDER BY m.createTime DESC
       LIMIT ?, ?
     `

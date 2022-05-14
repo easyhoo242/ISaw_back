@@ -40,9 +40,10 @@ class MomentMiddleware {
 
 		try {
 			const result = await insertMoment(id, title, content, label)
-			ctx.body = { message: '发表动态成功', id: result.insertId }
+
+			ctx.body = new OkResult('发表动态成功~', result.insertId)
 		} catch (error) {
-			ctx.body = '发表动态失败，标签id不存在：' + error.message
+			ctx.body = new ErrResult('发表动态失败，标签id不存在~')
 		}
 	}
 
@@ -111,7 +112,7 @@ class MomentMiddleware {
 	async removeMoment(ctx, next) {
 		const momentId = ctx.params.momentId
 		const result = await remove(momentId)
-		ctx.body = result
+		ctx.body = new OkResult('删除成功', result)
 	}
 
 	// 读取动态配图
