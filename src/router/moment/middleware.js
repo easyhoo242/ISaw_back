@@ -36,7 +36,7 @@ class MomentMiddleware {
 			return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
 		// 校验content长度
-		if (content.length > 10000) {
+		if (content.length > 16000) {
 			const err = new Error(CONTENT)
 			return ctx.app.emit('error', err, ctx)
 		}
