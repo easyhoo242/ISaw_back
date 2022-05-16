@@ -313,8 +313,6 @@ class MomentService {
 
 		const [result] = await connection.execute(statement, [limit])
 
-		console.log(result)
-
 		return result
 	}
 
@@ -373,7 +371,6 @@ class MomentService {
 	}
 
 	async momentListSearchHasNoKey(label, order, limit, offset) {
-		console.log(arguments)
 		const statement = `
       SELECT
         m.id momentId,

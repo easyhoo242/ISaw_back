@@ -8,7 +8,6 @@ let list = []
 
 // 给所有人发送
 function allSend(onLineCount, data) {
-	// console.log(onLineCount, data);
 	for (let user of list) {
 		user.ctx.websocket.send(
 			JSON.stringify({

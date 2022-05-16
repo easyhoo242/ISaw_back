@@ -52,7 +52,6 @@ class MomentMiddleware {
 
 	// 获取动态详情
 	async momentDetail(ctx, next) {
-		console.log(123)
 		const { momentId } = ctx.params
 		const result = await detail(momentId)
 		ctx.body = result
@@ -62,7 +61,6 @@ class MomentMiddleware {
 	async momentList(ctx, next) {
 		const { label, userId, offset = '0', limit = '10' } = ctx.query
 
-		console.log(label, userId)
 		if (label) {
 			// 根据label获取动态列表
 			let { order = '0', userId = '' } = ctx.query
@@ -212,8 +210,6 @@ class MomentMiddleware {
 	async getHotseeList(ctx) {
 		try {
 			const { type = '0' } = ctx.query
-
-			console.log(type)
 
 			const result =
 				type === '0' ? await hotSeeList('6') : await switchMoment('6')

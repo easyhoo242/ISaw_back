@@ -122,7 +122,6 @@ class CommentMiddleware {
 	// 最近评论列表
 
 	async getLatelyComment(ctx) {
-		console.log(123)
 		const result = await LatelyComment()
 
 		ctx.body = new OkResult('获取最新评论接口列表~', result)
