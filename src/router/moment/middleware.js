@@ -194,8 +194,7 @@ class MomentMiddleware {
 	// 获取随便看看列表
 	async getCauseList(ctx) {
 		try {
-			// const offset = (Math.floor(Math.random() * (5 - 1 + 1)) + 1).toString()
-			const offset = '0'
+			const { offset = '0' } = ctx.query
 
 			// limit offset
 			const result = await causeList('6', offset)
