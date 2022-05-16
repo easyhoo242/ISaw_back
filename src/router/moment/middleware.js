@@ -147,9 +147,9 @@ class MomentMiddleware {
 			// 修改内容
 			await update(momentId, label, title, content)
 
-			ctx.body = '修改动态成功~'
+			ctx.body = new OkResult('修改动态成功~')
 		} catch (error) {
-			ctx.body = '修改动态失败，标签id不存在：' + error.message
+			ctx.body = new ErrResult('修改动态失败，标签id不存在：' + error.message)
 		}
 	}
 

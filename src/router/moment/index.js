@@ -26,7 +26,7 @@ momentRouter.get('/:momentId', momentDetail) // 动态详情
 
 momentRouter.get('/', momentList) // 动态列表
 
-momentRouter.patch(
+momentRouter.post(
 	'/:momentId',
 	verifyToken,
 	verifyPermission('moment'),
