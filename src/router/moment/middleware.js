@@ -12,6 +12,7 @@ const {
 	picture,
 	causeList,
 	hotSeeList,
+	switchMoment,
 	momentListSearchHasKey,
 	momentListSearchHasNoKey,
 } = require('./service')
@@ -210,7 +211,12 @@ class MomentMiddleware {
 	// 获取热门动态列表
 	async getHotseeList(ctx) {
 		try {
-			const result = await hotSeeList('6')
+			const { type = '0' } = ctx.query
+
+			console.log(type)
+
+			const result =
+				type === '0' ? await hotSeeList('6') : await switchMoment('6')
 
 			ctx.body = new OkResult('热门动态查询成功', result)
 		} catch (error) {
