@@ -48,20 +48,26 @@ class UserService {
 		let agreeSum = 0
 
 		try {
-			for (let i = 0; i < idList.length; i++) {
-				// 评论总数
-				const [[{ CommentCount }]] = await connection.execute(
-					statementCommentCount,
-					[idList[i]]
-				)
-				commentSum += CommentCount
+			if (!idList || !idList.length) {
+				commentSum = 0
 
-				// 点赞总数
-				const [[{ AgreeCount }]] = await connection.execute(
-					statementAgreeCount,
-					[idList[i]]
-				)
-				agreeSum += AgreeCount
+				agreeSum = 0
+			} else {
+				for (let i = 0; i < idList.length; i++) {
+					// 评论总数
+					const [[{ CommentCount }]] = await connection.execute(
+						statementCommentCount,
+						[idList[i]]
+					)
+					commentSum += CommentCount
+
+					// 点赞总数
+					const [[{ AgreeCount }]] = await connection.execute(
+						statementAgreeCount,
+						[idList[i]]
+					)
+					agreeSum += AgreeCount
+				}
 			}
 		} catch (error) {
 			console.log(error, '数据错了')
