@@ -109,6 +109,42 @@ class UserService {
 			ctx.body = error
 		}
 	}
+
+	async changePsw(userId, oldPsw, newPsw) {
+		const statement = ` UPDATE users
+                          SET password = ?
+                        WHERE id = ?`
+
+		const statement2 = `SELECT password FROM users WHERE id = ?;`
+
+		let flag = true
+		let msg = '修改成功~'
+
+		try {
+			const [[{ password }]] = await connection.execute(statement2, [userId])
+
+			if (!(oldPsw == password)) {
+				flag = false
+				msg = '密码不正确'
+			} else {
+				const [result] = await connection.execute(statement, [newPsw, userId])
+
+				if (!result.affectedRows) {
+					flag = false
+					msg = '修改失败'
+				}
+			}
+
+			return {
+				flag,
+				msg,
+			}
+		} catch (error) {
+			console.log('错了', error)
+
+			ctx.body = error
+		}
+	}
 }
 
 module.exports = new UserService()

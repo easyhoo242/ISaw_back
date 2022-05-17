@@ -110,6 +110,23 @@ class UserMiddleware {
 			ctx.body = new ErrResult('修改失败')
 		}
 	}
+
+	async changeUserPsw(ctx) {
+		const { userId } = ctx.params
+		const { oldPsw, newPsw } = ctx.request.body
+
+		const res = await service.changePsw(
+			userId,
+			md5password(oldPsw),
+			md5password(newPsw)
+		)
+
+		if (!res.flag) {
+			ctx.body = new ErrResult(res.msg)
+		} else {
+			ctx.body = new OkResult(res.msg)
+		}
+	}
 }
 
 module.exports = new UserMiddleware()
