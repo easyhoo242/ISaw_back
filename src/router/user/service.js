@@ -28,10 +28,10 @@ class UserService {
 
 	// 用户详情
 	async userDetail(id) {
-		const statement = ` SELECT u.id, u.username, u.nickname, u.avatar_url avatar,
+		const statement = ` SELECT u.id, u.username, u.nickname, u.avatar_url avatar, 
+                            u.sex, u.age, u.email, u.telPhone, u.desc, u.type,
                           (SELECT COUNT (*) FROM moment m WHERE m.user_id = u.id) moment_count,
-                          (SELECT COUNT (*) FROM moment_agree mg WHERE mg.user_id = u.id) agree,
-                          (SELECT COUNT (*) FROM comment c WHERE c.user_id = u.id) comment_count
+                          (SELECT COUNT (*) FROM moment_agree mg WHERE mg.user_id = u.id) agree
                         FROM users u 
                         WHERE id = ?;`
 
