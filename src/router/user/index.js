@@ -8,12 +8,17 @@ const {
 	createUser,
 	getAvatar,
 	getUserDetail,
+	changeUserInfo,
 } = require('./middleware')
+
+const { verifyToken } = require('../../common/common-middleware')
 
 userRouter.post('/', verifyUser, passwordHandle, createUser) // 注册
 
 userRouter.get('/:userId/avatar', getAvatar) // 查看头像
 
 userRouter.get('/:userId', getUserDetail) // 用户信息
+
+userRouter.post('/:userId', verifyToken, changeUserInfo) // 修改信息
 
 module.exports = userRouter

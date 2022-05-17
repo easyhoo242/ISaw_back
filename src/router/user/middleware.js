@@ -87,6 +87,29 @@ class UserMiddleware {
 			ctx.body = new ErrResult(error)
 		}
 	}
+
+	// 修改用户信息
+	async changeUserInfo(ctx) {
+		const { userId } = ctx.params
+
+		const { nickname, sex, age, email, telPhone, desc } = ctx.request.body
+
+		const result = await service.change(
+			userId,
+			nickname,
+			sex,
+			age,
+			email,
+			telPhone,
+			desc
+		)
+
+		if (result.affectedRows) {
+			ctx.body = new OkResult('修改成功')
+		} else {
+			ctx.body = new ErrResult('修改失败')
+		}
+	}
 }
 
 module.exports = new UserMiddleware()

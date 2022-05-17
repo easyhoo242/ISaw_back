@@ -29,7 +29,7 @@ class UserService {
 	// 用户详情
 	async userDetail(id) {
 		const statement = ` SELECT u.id, u.username, u.nickname, u.avatar_url avatar, 
-                            u.sex, u.age, u.email, u.telPhone, u.desc, u.type,
+                            u.sex, u.age, u.email, u.telPhone, u.user_desc 'desc', u.type,
                           (SELECT COUNT (*) FROM moment m WHERE m.user_id = u.id) moment_count,
                           (SELECT COUNT (*) FROM moment_agree mg WHERE mg.user_id = u.id) agree
                         FROM users u 
@@ -75,6 +75,32 @@ class UserService {
 		}
 
 		return finalResult
+	}
+
+	// 修改用户信息
+
+	async change(userId, nickname, sex, age, email, telPhone, desc) {
+		const statement = ` UPDATE users
+                        SET nickname = ?, sex = ?, age = ?, email = ?, telPhone = ?, user_desc = ?
+                        WHERE id = ?`
+
+		try {
+			const [result] = await connection.execute(statement, [
+				nickname,
+				sex,
+				age,
+				email,
+				telPhone,
+				desc,
+				userId,
+			])
+
+			return result
+		} catch (error) {
+			console.log('错了', error)
+
+			ctx.body = error
+		}
 	}
 }
 
