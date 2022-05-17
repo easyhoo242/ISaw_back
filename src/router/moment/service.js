@@ -410,6 +410,23 @@ class MomentService {
 			return error
 		}
 	}
+
+	async look(id) {
+		try {
+			const [[{ look }]] = await connection.execute(
+				`SELECT look FROM moment WHERE id = ?;`,
+				[id]
+			)
+
+			const statement = `UPDATE moment SET look = ? WHERE id = ?;`
+
+			const [result] = await connection.execute(statement, [look + 1, id])
+
+			return result
+		} catch (error) {
+			console.log(error)
+		}
+	}
 }
 
 module.exports = new MomentService()

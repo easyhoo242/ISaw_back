@@ -16,6 +16,7 @@ const {
 	getHotseeList,
 	getLatelyMomentList,
 	momentListSearch,
+	momentLook,
 } = require('./middleware')
 
 const momentRouter = new Router({ prefix: '/moment' })
@@ -48,5 +49,7 @@ momentRouter.get('/hotsee/:id', getHotseeList) //热门文章
 momentRouter.get('/lately/:id', getLatelyMomentList) //最近发表
 
 momentRouter.get('/search/:id', momentListSearch) //搜索列表
+
+momentRouter.post('/:momentId/look', momentLook)
 
 module.exports = momentRouter

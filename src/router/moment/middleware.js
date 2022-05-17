@@ -15,6 +15,7 @@ const {
 	switchMoment,
 	momentListSearchHasKey,
 	momentListSearchHasNoKey,
+	look,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -228,6 +229,20 @@ class MomentMiddleware {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	async momentLook(ctx) {
+		const { momentId } = ctx.params
+
+		// console.log(momentId)
+
+		const result = await look(momentId)
+
+		if (!result.affectedRows) {
+			return
+		}
+
+		ctx.body = new OkResult('浏览成功~')
 	}
 }
 
