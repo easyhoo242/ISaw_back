@@ -6,12 +6,13 @@ class UserService {
 	async create(user) {
 		const { username, password, nickname } = user
 		const statement =
-			'INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)'
+			'INSERT INTO users (username, password, nickname, type) VALUES (?, ?, ?, ?)'
 		try {
 			const [result] = await connection.execute(statement, [
 				username,
 				password,
 				nickname,
+				3,
 			])
 			return result
 		} catch (error) {
