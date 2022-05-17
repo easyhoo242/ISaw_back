@@ -16,6 +16,7 @@ const {
 	momentListSearchHasKey,
 	momentListSearchHasNoKey,
 	look,
+	momentInfo,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -243,6 +244,13 @@ class MomentMiddleware {
 		}
 
 		ctx.body = new OkResult('浏览成功~')
+	}
+
+	// 查询文章统计信息
+	async getMomentInfo(ctx) {
+		const result = await momentInfo()
+
+		ctx.body = new OkResult('查询成功', result)
 	}
 }
 

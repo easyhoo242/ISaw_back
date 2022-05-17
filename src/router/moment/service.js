@@ -434,6 +434,21 @@ class MomentService {
 			console.log(error)
 		}
 	}
+
+	// 文章统计
+	async momentInfo() {
+		const statement = `SELECT 
+                        COUNT(1) count,
+                        l.name name,
+                        l.id id
+                      FROM moment m
+                      LEFT JOIN label l ON l.id = m.label_id 
+                      GROUP BY label_id;`
+
+		const [result] = await connection.execute(statement)
+
+		return result
+	}
 }
 
 module.exports = new MomentService()
