@@ -438,16 +438,51 @@ class MomentService {
 	// 文章统计
 	async momentInfo() {
 		const statement = `SELECT 
-                        COUNT(1) count,
+                        COUNT(1) value,
+                        SUM(look) lookCount,
                         l.name name,
                         l.id id
                       FROM moment m
                       LEFT JOIN label l ON l.id = m.label_id 
                       GROUP BY label_id;`
 
-		const [result] = await connection.execute(statement)
+		try {
+			const [lookResult] = await connection.execute(statement)
 
-		return result
+			const [commentResult] = await connection.execute(
+				` SELECT 
+            COUNT(1) value,
+            l.name, 
+            l.id
+          FROM comment c
+          LEFT JOIN moment m on m.id = c.moment_id
+          LEFT JOIN label l on m.label_id = l.id
+          GROUP BY l.id;`
+			)
+
+			const [agreeResult] = await connection.execute(
+				` SELECT
+            COUNT( 1 ) value,
+            l.name, 
+            l.id
+          FROM
+            moment_agree mg
+            LEFT JOIN moment m ON mg.moment_id = m.id
+            LEFT JOIN label l ON m.label_id = l.id 
+          GROUP BY
+            l.id;`
+			)
+
+			const result = {
+				lookResult,
+				commentResult,
+				agreeResult,
+			}
+
+			return result
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 
