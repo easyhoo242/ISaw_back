@@ -108,13 +108,16 @@ class MomentMiddleware {
 
 		let order = 'm.updateTime'
 
-		// （1为点赞最多，2为评论最多， 0为最新）
+		// （1为点赞最多，2为评论最多， 3为浏览量， 0为最新）
 		switch (sort) {
 			case '1':
 				order = 'agree'
 				break
 			case '2':
 				order = 'commentCount'
+				break
+			case '3':
+				order = 'look'
 				break
 			default:
 				order = 'm.updateTime'

@@ -328,6 +328,7 @@ class MomentService {
       SELECT
         m.id momentId,
         m.title title,
+        m.look look,
         m.content content,
         m.createTime createTime,
         m.updateTime updateTime,
@@ -381,6 +382,7 @@ class MomentService {
       SELECT
         m.id momentId,
         m.title title,
+        m.look look,
         m.content content,
         m.createTime createTime,
         m.updateTime updateTime,
