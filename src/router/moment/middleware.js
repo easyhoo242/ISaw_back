@@ -235,18 +235,23 @@ class MomentMiddleware {
 		}
 	}
 
+	// 文章浏览
 	async momentLook(ctx) {
-		const { momentId } = ctx.params
+		try {
+			const { momentId } = ctx.params
 
-		// console.log(momentId)
+			const { userId } = ctx.request.body
 
-		const result = await look(momentId)
+			const result = await look(userId.toString(), momentId)
 
-		if (!result.affectedRows) {
-			return
+			if (!result.affectedRows) {
+				return
+			}
+
+			ctx.body = new OkResult('浏览成功~')
+		} catch (error) {
+			console.log(error)
 		}
-
-		ctx.body = new OkResult('浏览成功~')
 	}
 
 	// 查询文章统计信息

@@ -420,16 +420,19 @@ class MomentService {
 	}
 
 	// 浏览量
-	async look(id) {
+	async look(userId, momentId) {
 		try {
 			const [[{ look }]] = await connection.execute(
 				`SELECT look FROM moment WHERE id = ?;`,
-				[id]
+				[momentId]
 			)
 
 			const statement = `UPDATE moment SET look = ? WHERE id = ?;`
+			const statement2 = `INSERT INTO moment_look (user_id, moment_id) VALUES (?, ?);`
 
-			const [result] = await connection.execute(statement, [look + 1, id])
+			const [result] = await connection.execute(statement, [look + 1, momentId])
+
+			await connection.execute(statement2, [userId, momentId])
 
 			return result
 		} catch (error) {

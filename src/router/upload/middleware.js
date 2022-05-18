@@ -182,6 +182,8 @@ class UploadMiddleware {
 			// }
 
 			const { filename, mimetype, size } = ctx.req.file
+
+			console.log(ctx.req.file)
 			// console.log(ctx.req.file);
 			await uploadPictures(id, filename, mimetype, size, momentId)
 
