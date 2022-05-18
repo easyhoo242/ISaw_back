@@ -18,6 +18,7 @@ const {
 	momentListSearch,
 	momentLook,
 	getMomentInfo,
+	getMomentData,
 } = require('./middleware')
 
 const momentRouter = new Router({ prefix: '/moment' })
@@ -53,6 +54,8 @@ momentRouter.get('/search/:id', momentListSearch) //搜索列表
 
 momentRouter.post('/:momentId/look', momentLook) // 浏览
 
-momentRouter.get('/momentInfo/:id', getMomentInfo)
+momentRouter.get('/momentInfo/:id', getMomentInfo) // 统计字段
+
+momentRouter.get('/momentData/:id', getMomentData) // 近几天数量
 
 module.exports = momentRouter

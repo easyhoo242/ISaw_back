@@ -17,6 +17,7 @@ const {
 	momentListSearchHasNoKey,
 	look,
 	momentInfo,
+	momentData,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -259,6 +260,36 @@ class MomentMiddleware {
 		const result = await momentInfo()
 
 		ctx.body = new OkResult('查询成功', result)
+	}
+
+	// 查询最近几天的动态
+	async getMomentData(ctx) {
+		try {
+			const { type } = ctx.query
+
+			let tableName = 'moment'
+
+			switch (type) {
+				case '1':
+					tableName = 'moment_look'
+					break
+				case '2':
+					tableName = 'moment_agree'
+					break
+				case '3':
+					tableName = 'comment'
+					break
+				default:
+					tableName = 'moment'
+					break
+			}
+
+			const result = await momentData(tableName)
+
+			ctx.body = new OkResult('查询成功', result)
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 

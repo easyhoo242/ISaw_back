@@ -489,6 +489,45 @@ class MomentService {
 			console.log(error)
 		}
 	}
+
+	// 数量统计
+	async momentData(tableName) {
+		const statementToday = ` SELECT COUNT(1) count FROM ${tableName} WHERE createTime > CURDATE()`
+		const statementYesterday = `SELECT COUNT(1) count FROM ${tableName} WHERE TO_DAYS( NOW( ) ) - TO_DAYS(createTime) <= 1;`
+
+		const statementByDays = (days) => {
+			return `SELECT COUNT(1) count
+              FROM ${tableName} 
+              WHERE 
+                DATE_SUB(CURDATE() , INTERVAL ${days} DAY) <= date(createTime)`
+		}
+
+		const statementAll = `SELECT COUNT(1) count FROM ${tableName};`
+
+		const [[{ count: todayCount }]] = await connection.execute(statementToday)
+		const [[{ count: yesterdayCount }]] = await connection.execute(
+			statementYesterday
+		)
+		const [[{ count: weekCount }]] = await connection.execute(
+			statementByDays(7)
+		)
+		const [[{ count: monthCount }]] = await connection.execute(
+			statementByDays(30)
+		)
+		const [[{ count: allCount }]] = await connection.execute(statementAll)
+
+		const result = {
+			today: todayCount,
+			yesterday: yesterdayCount,
+			week: weekCount,
+			month: monthCount,
+			all: allCount,
+		}
+
+		console.log(result)
+
+		return result
+	}
 }
 
 module.exports = new MomentService()
