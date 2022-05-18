@@ -18,6 +18,7 @@ const {
 	look,
 	momentInfo,
 	momentData,
+	countByDay,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -290,6 +291,13 @@ class MomentMiddleware {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	// 每天的数据量
+	async getCountByDay(ctx) {
+		const result = await countByDay()
+
+		ctx.body = new OkResult('查询成功', result)
 	}
 }
 

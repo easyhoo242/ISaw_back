@@ -19,6 +19,7 @@ const {
 	momentLook,
 	getMomentInfo,
 	getMomentData,
+	getCountByDay,
 } = require('./middleware')
 
 const momentRouter = new Router({ prefix: '/moment' })
@@ -57,5 +58,7 @@ momentRouter.post('/:momentId/look', momentLook) // 浏览
 momentRouter.get('/momentInfo/:id', getMomentInfo) // 统计字段
 
 momentRouter.get('/momentData/:id', getMomentData) // 近几天数量
+
+momentRouter.get('/dataByDay/:id', getCountByDay) // 每天数量
 
 module.exports = momentRouter

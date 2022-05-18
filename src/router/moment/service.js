@@ -524,9 +524,50 @@ class MomentService {
 			all: allCount,
 		}
 
-		console.log(result)
-
 		return result
+	}
+
+	// 每天的数据量
+	async countByDay() {
+		try {
+			const getStatement = (table) => ` 
+      select all_day datatime, count(td.createTime) value from 
+      -- 查询时间，并统计数据
+      (
+        -- 生成日期 
+        SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL day_p DAY), '%Y-%m-%d') as all_day FROM ( 
+          -- 生成一个序号 
+          SELECT @day_p:=@day_p + 1 as day_p from 
+          -- 数字 5 * 6 = 30 改成自己需要的天数即可 【此处为连接查询 没有链接条件，结果为表1行数 * 表2行数】
+          (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4  ) ac1, 
+          (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 ) ac2,
+          -- 声明从0开始
+          (SELECT @day_p:= -1) a
+        ) ad 
+      ) months LEFT JOIN ${table} td 
+      -- 连接上要查询的表，链接条件为生成的日期 等于 表中的日期 
+      on months.all_day =  DATE_FORMAT( td.createTime ,'%Y-%m-%d' ) GROUP BY datatime
+      ORDER BY datatime ASC
+      ;`
+
+			const [momentCount] = await connection.execute(getStatement('moment'))
+			const [agreeCount] = await connection.execute(
+				getStatement('moment_agree')
+			)
+			const [lookCount] = await connection.execute(getStatement('moment_look'))
+			const [commentCount] = await connection.execute(getStatement('comment'))
+
+			const result = {
+				momentCount,
+				agreeCount,
+				lookCount,
+				commentCount,
+			}
+
+			return result
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 
