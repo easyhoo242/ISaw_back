@@ -150,7 +150,7 @@ class MomentService {
       FROM moment m LEFT JOIN users u
       ON m.user_id = u.id
 
-      ORDER BY m.createTime DESC
+      ORDER BY m.look DESC, m.createTime DESC
       LIMIT ?, ?
     `
 		try {
