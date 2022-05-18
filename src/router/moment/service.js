@@ -60,7 +60,7 @@ class MomentService {
 	// 获取label获取动态列表
 	async listInLabel(id, label, order, offset, limit) {
 		const statement = `
-      SELECT m.id momentId,m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
+      SELECT m.id momentId, m.title title, m.look look, m.content content, m.createTime createTime, m.updateTime updateTime,
         JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) author,
         (SELECT JSON_ARRAYAGG(CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')) FROM picture p WHERE p.moment_id = m.id) images,
         (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
@@ -104,7 +104,7 @@ class MomentService {
 	// 根据用户id获取动态列表
 	async listInUser(userId, offset, limit) {
 		const statement = `
-      SELECT m.id momentId, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
+      SELECT m.id momentId,m.look look, m.title title, m.content content, m.createTime createTime, m.updateTime updateTime,
         JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) author,
         (SELECT JSON_ARRAYAGG(CONCAT('${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y')) FROM picture p WHERE p.moment_id = m.id) images,
         (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
