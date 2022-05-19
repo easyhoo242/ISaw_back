@@ -69,10 +69,8 @@ class UserMiddleware {
 		const result = await service.avatar(userId)
 
 		ctx.response.set('Content-Type', result.mimetype)
-		ctx.body = new OkResult(
-			'读取成功',
-			fs.createReadStream(`${AVATAR_PATH}/${result[0].filename}`)
-		)
+
+		ctx.body = fs.createReadStream(`${AVATAR_PATH}/${result[0].filename}`)
 	}
 
 	// 用户信息
