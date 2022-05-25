@@ -145,6 +145,21 @@ class UserService {
 			ctx.body = error
 		}
 	}
+
+	async userList() {
+		const [result] = await connection.execute(
+			` SELECT 
+          u.id, u.username, u.nickname, u.avatar_url avatar, 
+          u.sex, u.age, u.email, u.telPhone, u.user_desc 'desc', u.type,
+          DATE_FORMAT( u.createTime, '%Y-%m-%d -- %H:%i:%S') 'createTime',
+          DATE_FORMAT( u.updateTime, '%Y-%m-%d -- %H:%i:%S') 'updateTime',
+          (SELECT COUNT (*) FROM moment m WHERE m.user_id = u.id) moment_count,
+          (SELECT COUNT (*) FROM moment_agree mg WHERE mg.user_id = u.id) agree
+        FROM users u;`
+		)
+
+		return result
+	}
 }
 
 module.exports = new UserService()

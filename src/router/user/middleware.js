@@ -125,6 +125,13 @@ class UserMiddleware {
 			ctx.body = new OkResult(res.msg)
 		}
 	}
+
+	async getUsersList(ctx) {
+		console.log(123)
+		const result = await service.userList()
+
+		ctx.body = result
+	}
 }
 
 module.exports = new UserMiddleware()
