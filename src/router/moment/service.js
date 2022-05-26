@@ -775,7 +775,18 @@ class MomentService {
 		console.log(offset)
 		try {
 			const [result] = await connection.execute(
-				`SELECT * FROM moment_look LIMIT 20 OFFSET ?;`,
+				` SELECT
+            ml.user_id,
+            ml.moment_id,
+            DATE_FORMAT( ml.createTime, '%Y-%m-%d %H:%i:%S' ) 'createTime',
+            JSON_OBJECT( 'id', m.id, 'title', m.title ) moment,
+            JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatar', u.avatar_url ) author 
+          FROM
+            moment_look ml
+            LEFT JOIN moment m ON m.id = ml.moment_id
+            LEFT JOIN users u ON u.id = ml.user_id 
+            LIMIT 20 OFFSET ?;
+        `,
 				[offset]
 			)
 
@@ -794,7 +805,18 @@ class MomentService {
 
 	async backLike(offset) {
 		const [result] = await connection.execute(
-			`SELECT * FROM moment_agree LIMIT 10 OFFSET ?;`,
+			` SELECT
+          mg.user_id,
+          mg.moment_id,
+          DATE_FORMAT( mg.createTime, '%Y-%m-%d %H:%i:%S' ) 'createTime',
+          JSON_OBJECT( 'id', m.id, 'title', m.title ) moment,
+          JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatar', u.avatar_url ) author 
+        FROM
+          moment_agree mg
+          LEFT JOIN moment m ON m.id = mg.moment_id
+          LEFT JOIN users u ON u.id = mg.user_id 
+          LIMIT 20 OFFSET ?;
+      `,
 			[offset]
 		)
 
