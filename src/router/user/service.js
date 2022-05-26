@@ -85,13 +85,12 @@ class UserService {
 	}
 
 	// 修改用户信息
-
-	async change(userId, nickname, sex, age, email, telPhone, desc) {
-		const statement = ` UPDATE users
+	async change(userId, nickname, sex, age, email, telPhone, desc, type) {
+		if (!type) {
+			const statement = ` UPDATE users
                         SET nickname = ?, sex = ?, age = ?, email = ?, telPhone = ?, user_desc = ?
                         WHERE id = ?`
 
-		try {
 			const [result] = await connection.execute(statement, [
 				nickname,
 				sex,
@@ -103,10 +102,23 @@ class UserService {
 			])
 
 			return result
-		} catch (error) {
-			console.log('错了', error)
+		} else {
+			const statement = ` UPDATE users
+      SET nickname = ?, sex = ?, age = ?, email = ?, telPhone = ?, user_desc = ?, type = ?
+      WHERE id = ?`
 
-			ctx.body = error
+			const [result] = await connection.execute(statement, [
+				nickname,
+				sex,
+				age,
+				email,
+				telPhone,
+				desc,
+				type,
+				userId,
+			])
+
+			return result
 		}
 	}
 
@@ -180,6 +192,15 @@ class UserService {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	async deleteUser(id) {
+		const [result] = await connection.execute(
+			`DELETE FROM users WHERE id = ?;`,
+			[id]
+		)
+
+		return result
 	}
 }
 

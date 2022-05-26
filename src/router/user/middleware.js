@@ -90,7 +90,15 @@ class UserMiddleware {
 	async changeUserInfo(ctx) {
 		const { userId } = ctx.params
 
-		const { nickname, sex, age, email, telPhone, desc } = ctx.request.body
+		const {
+			nickname,
+			sex,
+			age,
+			email,
+			telPhone,
+			desc,
+			type = '',
+		} = ctx.request.body
 
 		const result = await service.change(
 			userId,
@@ -99,7 +107,8 @@ class UserMiddleware {
 			age,
 			email,
 			telPhone,
-			desc
+			desc,
+			type
 		)
 
 		if (result.affectedRows) {
@@ -132,6 +141,20 @@ class UserMiddleware {
 		const result = await service.userList()
 
 		ctx.body = result
+	}
+
+	// 删除用户
+	async postEditUser(ctx) {
+		const { id } = ctx.params
+
+		const result = await service.deleteUser(id)
+
+		if (!result.affectedRows) {
+			ctx.body = new ErrResult('删除失败')
+			return
+		}
+
+		ctx.body = new OkResult('删除成功', id)
 	}
 }
 
