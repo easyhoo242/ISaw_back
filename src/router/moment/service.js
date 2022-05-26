@@ -569,6 +569,187 @@ class MomentService {
 			console.log(error)
 		}
 	}
+
+	// 后台文章搜索
+	async backListAll(audit, keyBoard, order, limit, offset) {
+		const baseStatement = `SELECT
+        m.id momentId,
+        m.title title,
+        m.look look,
+        m.content content,
+        m.createTime createTime,
+        m.updateTime updateTime,
+        JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) FROM picture p WHERE p.moment_id = m.id ) images,
+        ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) isAgree,
+        ( SELECT JSON_OBJECT( 'id', l.id, 'name', l.NAME ) FROM label l WHERE l.id = m.label_id ) label 
+      FROM
+        moment m
+      `
+
+		if (audit === '1') {
+			const statement =
+				baseStatement +
+				`
+          LEFT JOIN users u ON m.user_id = u.id
+          LEFT JOIN label l ON l.id = m.label_id 
+            WHERE
+                 m.content LIKE '%${keyBoard}%' AND m.audit = '1' 
+              OR m.title LIKE '%${keyBoard}%' AND m.audit = '1'
+        ORDER BY
+          ${order} DESC,
+          m.updateTime DESC
+        LIMIT ? OFFSET ?
+      `
+
+			try {
+				const [result] = await connection.execute(statement, [limit, offset])
+
+				const statement2 = `
+          SELECT COUNT(1) momentCount 
+          FROM moment m
+          WHERE 
+            content LIKE '%${keyBoard}%' 
+            AND m.audit = '1'
+            OR title LIKE '%${keyBoard}%' 
+            AND m.audit = '1'
+         `
+
+				const [[{ momentCount }]] = await connection.execute(statement2)
+
+				return {
+					list: result,
+					momentCount,
+				}
+			} catch (error) {
+				console.log(error)
+				return error
+			}
+		} else {
+			const statement =
+				baseStatement +
+				`
+        LEFT JOIN users u ON m.user_id = u.id
+        LEFT JOIN label l ON l.id = m.label_id 
+          WHERE
+            m.content LIKE '%${keyBoard}%' AND m.audit = '0' 
+            OR m.title LIKE '%${keyBoard}%' AND m.audit = '0'
+        ORDER BY
+          ${order} DESC,
+          m.updateTime DESC
+        LIMIT ? OFFSET ?
+    `
+
+			try {
+				const [result] = await connection.execute(statement, [limit, offset])
+
+				const statement2 = `
+          SELECT COUNT(1) momentCount 
+          FROM moment m 
+          WHERE m.content LIKE '%${keyBoard}%' AND m.audit = '0' 
+                OR m.title LIKE '%${keyBoard}%' AND m.audit = '0'
+        `
+
+				const [[{ momentCount }]] = await connection.execute(statement2)
+
+				return {
+					list: result,
+					momentCount,
+				}
+			} catch (error) {
+				console.log(error)
+				return error
+			}
+		}
+	}
+
+	// 后台文章搜索 不含keyboard
+	async backListAllNoKay(audit, order, limit, offset) {
+		const baseStatement = `SELECT
+        m.id momentId,
+        m.title title,
+        m.look look,
+        m.content content,
+        m.createTime createTime,
+        m.updateTime updateTime,
+        JSON_OBJECT( 'id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url ) author,
+        ( SELECT JSON_ARRAYAGG( CONCAT( '${APP_URL}:${APP_PORT}', '/moment/picture/', p.filename, '-y' )) FROM picture p WHERE p.moment_id = m.id ) images,
+        ( SELECT COUNT(*) FROM COMMENT c WHERE m.id = c.moment_id ) commentCount,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) agree,
+        ( SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id ) isAgree,
+        ( SELECT JSON_OBJECT( 'id', l.id, 'name', l.NAME ) FROM label l WHERE l.id = m.label_id ) label 
+      FROM
+        moment m
+      `
+
+		if (audit === '1') {
+			const statement =
+				baseStatement +
+				`
+          LEFT JOIN users u ON m.user_id = u.id
+          LEFT JOIN label l ON l.id = m.label_id 
+            WHERE m.audit = '1'
+        ORDER BY
+          ${order} DESC,
+          m.updateTime DESC
+        LIMIT ? OFFSET ?
+      `
+
+			try {
+				const [result] = await connection.execute(statement, [limit, offset])
+
+				const statement2 = `
+          SELECT COUNT(1) momentCount 
+          FROM moment m
+          WHERE m.audit = '1'
+         `
+
+				const [[{ momentCount }]] = await connection.execute(statement2)
+
+				return {
+					list: result,
+					momentCount,
+				}
+			} catch (error) {
+				console.log(error)
+				return error
+			}
+		} else {
+			const statement =
+				baseStatement +
+				`
+        LEFT JOIN users u ON m.user_id = u.id
+        LEFT JOIN label l ON l.id = m.label_id 
+          WHERE m.audit = '0'
+        ORDER BY
+          ${order} DESC,
+          m.updateTime DESC
+        LIMIT ? OFFSET ?
+    `
+
+			try {
+				const [result] = await connection.execute(statement, [limit, offset])
+
+				const statement2 = `
+          SELECT COUNT(1) momentCount 
+          FROM moment m 
+          WHERE m.audit = '0'
+        `
+
+				const [[{ momentCount }]] = await connection.execute(statement2)
+
+				return {
+					list: result,
+					momentCount,
+				}
+			} catch (error) {
+				console.log(error)
+				return error
+			}
+		}
+	}
 }
 
 module.exports = new MomentService()

@@ -19,6 +19,8 @@ const {
 	momentInfo,
 	momentData,
 	countByDay,
+	backListAll,
+	backListAllNoKay,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -298,6 +300,46 @@ class MomentMiddleware {
 		const result = await countByDay()
 
 		ctx.body = new OkResult('查询成功', result)
+	}
+
+	// 后台文章搜索
+	async backMomentListAllSearch(ctx) {
+		const {
+			keyBoard = '',
+			sort = '1',
+			limit = '10',
+			offset = '0',
+			audit = '0',
+		} = ctx.query
+
+		console.log(audit)
+
+		let order = 'm.updateTime'
+
+		// （1为点赞最多，2为评论最多， 3为浏览量， 0为最新）
+		switch (sort) {
+			case '1':
+				order = 'agree'
+				break
+			case '2':
+				order = 'commentCount'
+				break
+			case '3':
+				order = 'look'
+				break
+			default:
+				order = 'm.updateTime'
+		}
+
+		if (!keyBoard) {
+			const result = await backListAllNoKay(audit, order, limit, offset)
+
+			ctx.body = new OkResult('查询成功~', result)
+		} else {
+			const result = await backListAll(audit, keyBoard, order, limit, offset)
+
+			ctx.body = new OkResult('查询成功~', result)
+		}
 	}
 }
 
