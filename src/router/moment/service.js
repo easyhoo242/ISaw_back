@@ -770,6 +770,43 @@ class MomentService {
 			console.log(error)
 		}
 	}
+
+	async backLook(offset) {
+		console.log(offset)
+		try {
+			const [result] = await connection.execute(
+				`SELECT * FROM moment_look LIMIT 20 OFFSET ?;`,
+				[offset]
+			)
+
+			const [[{ count }]] = await connection.execute(
+				`SELECT COUNT(1) count FROM moment_look;`
+			)
+
+			return {
+				list: result,
+				count,
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	async backLike(offset) {
+		const [result] = await connection.execute(
+			`SELECT * FROM moment_agree LIMIT 10 OFFSET ?;`,
+			[offset]
+		)
+
+		const [[{ count }]] = await connection.execute(
+			`SELECT COUNT(1) count FROM moment_agree;`
+		)
+
+		return {
+			list: result,
+			count,
+		}
+	}
 }
 
 module.exports = new MomentService()

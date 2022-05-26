@@ -22,7 +22,9 @@ const {
 	backListAll,
 	backListAllNoKay,
 	backAudit,
-  latelyMomentList
+	latelyMomentList,
+	backLook,
+	backLike,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -361,6 +363,32 @@ class MomentMiddleware {
 		}
 
 		ctx.body = new OkResult('审核成功')
+	}
+
+	// 浏览记录
+	async getBackLook(ctx) {
+		try {
+			const { offset = '0' } = ctx.query
+
+			const result = await backLook(offset)
+
+			ctx.body = result
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	// 点赞记录
+	async getBackLike(ctx) {
+		try {
+			const { offset = '0' } = ctx.query
+
+			const result = await backLike(offset)
+
+			ctx.body = result
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 

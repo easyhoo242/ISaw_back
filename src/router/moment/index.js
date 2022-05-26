@@ -22,6 +22,8 @@ const {
 	getCountByDay,
 	backMomentListAllSearch,
 	postBackAudit,
+	getBackLook,
+	getBackLike,
 } = require('./middleware')
 
 const momentRouter = new Router({ prefix: '/moment' })
@@ -68,5 +70,9 @@ momentRouter.get('/back/search/:id', backMomentListAllSearch) // 搜索文章
 momentRouter.post('/:momentId/back/audit', postBackAudit) // 文章审核
 
 momentRouter.delete('/:momentId/back', removeMoment) // 删除动态
+
+momentRouter.get('/back/look/:id', getBackLook)
+
+momentRouter.get('/back/like/:id', getBackLike)
 
 module.exports = momentRouter
