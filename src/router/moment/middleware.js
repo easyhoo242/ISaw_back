@@ -105,7 +105,7 @@ class MomentMiddleware {
 
 	async momentListSearch(ctx) {
 		const {
-			keyBoard = '我',
+			keyBoard = '',
 			label = '1',
 			sort = '1',
 			limit = '10',

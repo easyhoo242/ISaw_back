@@ -67,9 +67,9 @@ class MomentService {
         (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id) agree,
         (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id AND mg.user_id = ?) isAgree,
         (SELECT JSON_OBJECT('id', l.id, 'name', l.name) FROM label l WHERE l.id = m.label_id) label
-      FROM moment m LEFT JOIN users u
-      ON m.user_id = u.id
-      WHERE m.label_id = ?
+      FROM moment m 
+      LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.label_id = ? AND  m.audit = 0
       ORDER BY ${order} DESC
       LIMIT ?, ?
     `
@@ -110,9 +110,9 @@ class MomentService {
         (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
         (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id) agree,
         (SELECT JSON_OBJECT('id', l.id, 'name', l.name) FROM label l WHERE l.id = m.label_id) label
-      FROM moment m LEFT JOIN users u
-      ON m.user_id = u.id
-      WHERE m.user_id = ?
+      FROM moment m 
+      LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.user_id = ? AND m.audit = 0
       ORDER BY m.createTime DESC
       LIMIT ?, ?
     `
@@ -147,9 +147,9 @@ class MomentService {
         (SELECT COUNT(*) FROM comment c WHERE m.id = c.moment_id) commentCount,
         (SELECT COUNT(*) FROM moment_agree mg WHERE mg.moment_id = m.id) agree,
         (SELECT JSON_OBJECT('id', l.id, 'name', l.name) FROM label l WHERE l.id = m.label_id) label
-      FROM moment m LEFT JOIN users u
-      ON m.user_id = u.id
-
+      FROM moment m 
+      LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.audit = 0
       ORDER BY m.look DESC, m.createTime DESC
       LIMIT ?, ?
     `
@@ -226,6 +226,7 @@ class MomentService {
       FROM
         moment m
       LEFT JOIN users u ON m.user_id = u.id 
+      WHERE m.audit = 0
       ORDER BY agree DESC
       LIMIT ? OFFSET ?;
     `
@@ -255,6 +256,7 @@ class MomentService {
       FROM
         moment m
       LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.audit = 0
       ORDER BY look DESC, agree DESC 
       LIMIT ?;
     `
@@ -285,6 +287,7 @@ class MomentService {
       FROM
         moment m
       LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.audit = 0
       ORDER BY m.recommend DESC, look DESC
       LIMIT ?;
     `
@@ -313,6 +316,7 @@ class MomentService {
       FROM
         moment m
       LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.audit = 0
       ORDER BY createTime DESC
       LIMIT ?;
     `
@@ -343,10 +347,12 @@ class MomentService {
         LEFT JOIN users u ON m.user_id = u.id
         LEFT JOIN label l ON l.id = m.label_id 
           WHERE
-          	m.content LIKE '%${keyBoard}%' 
-          	AND l.id = ${label}
+          	m.content LIKE '%${keyBoard}%'
+            AND l.id = ${label}
+            AND m.audit = 0
           	OR m.title LIKE '%${keyBoard}%' 
           	AND l.id = ${label}
+            AND m.audit = 0
       ORDER BY
         ${order} DESC,
         m.updateTime DESC
@@ -361,9 +367,11 @@ class MomentService {
         FROM moment 
         WHERE 
           content LIKE '%${keyBoard}%' 
-          AND label_id = ${label}
+          AND label_id = ${label} 
+          AND audit = 0
           OR title LIKE '%${keyBoard}%' 
-          AND label_id = ${label} ;`
+          AND label_id = ${label} 
+          AND audit = 0;`
 
 			const [[{ momentCount }]] = await connection.execute(statement2, [label])
 
