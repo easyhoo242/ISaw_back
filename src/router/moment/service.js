@@ -695,8 +695,7 @@ class MomentService {
           LEFT JOIN label l ON l.id = m.label_id 
             WHERE m.audit = '1'
         ORDER BY
-          ${order} DESC,
-          m.updateTime DESC
+          ${order} DESC
         LIMIT ? OFFSET ?
       `
 
@@ -727,8 +726,7 @@ class MomentService {
         LEFT JOIN label l ON l.id = m.label_id 
           WHERE m.audit = '0'
         ORDER BY
-          ${order} DESC,
-          m.updateTime DESC
+          ${order} DESC
         LIMIT ? OFFSET ?
     `
 

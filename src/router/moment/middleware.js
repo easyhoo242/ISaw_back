@@ -314,9 +314,7 @@ class MomentMiddleware {
 			audit = '0',
 		} = ctx.query
 
-		console.log(audit)
-
-		let order = 'm.updateTime'
+		let order = 'm.createTime'
 
 		// （1为点赞最多，2为评论最多， 3为浏览量， 0为最新）
 		switch (sort) {
@@ -329,9 +327,14 @@ class MomentMiddleware {
 			case '3':
 				order = 'look'
 				break
+			case '4':
+				order = 'm.createTime'
+				break
 			default:
 				order = 'm.updateTime'
 		}
+
+		console.log(offset)
 
 		if (!keyBoard) {
 			const result = await backListAllNoKay(audit, order, limit, offset)
