@@ -109,6 +109,7 @@ class UserMiddleware {
 		}
 	}
 
+	// 修改密码
 	async changeUserPsw(ctx) {
 		const { userId } = ctx.params
 		const { oldPsw, newPsw } = ctx.request.body
@@ -126,8 +127,8 @@ class UserMiddleware {
 		}
 	}
 
+	// 获取用户列表
 	async getUsersList(ctx) {
-		console.log(123)
 		const result = await service.userList()
 
 		ctx.body = result
