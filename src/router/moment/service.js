@@ -326,7 +326,6 @@ class MomentService {
 		return result
 	}
 
-	// 文章列表搜索接口
 	async momentListSearchHasKey(keyBoard, label, order, limit, offset) {
 		const statement = `
       SELECT
@@ -404,7 +403,7 @@ class MomentService {
         moment m
         LEFT JOIN users u ON m.user_id = u.id
         LEFT JOIN label l ON l.id = m.label_id 
-      WHERE l.id = ${label}
+      WHERE l.id = ${label} AND m.audit = 0
       ORDER BY
         ${order} DESC,
         m.updateTime DESC
@@ -413,7 +412,7 @@ class MomentService {
 		try {
 			const [result] = await connection.execute(statement, [limit, offset])
 
-			const statement2 = `SELECT COUNT(1) momentCount FROM moment WHERE label_id = ?;`
+			const statement2 = `SELECT COUNT(1) momentCount FROM moment WHERE label_id = ? AND audit = 0;`
 
 			const [[{ momentCount }]] = await connection.execute(statement2, [label])
 

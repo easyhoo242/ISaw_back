@@ -22,6 +22,7 @@ const {
 	backListAll,
 	backListAllNoKay,
 	backAudit,
+  latelyMomentList
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -233,7 +234,7 @@ class MomentMiddleware {
 	// 获取最近发表动态列表
 	async getLatelyMomentList(ctx) {
 		try {
-			const result = await hotSeeList('6')
+			const result = await latelyMomentList('6')
 
 			ctx.body = new OkResult('热门动态查询成功', result)
 		} catch (error) {
