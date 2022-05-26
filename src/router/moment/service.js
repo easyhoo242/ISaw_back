@@ -613,7 +613,6 @@ class MomentService {
           FROM moment m
           WHERE 
             content LIKE '%${keyBoard}%' 
-            AND m.audit = '1'
             OR title LIKE '%${keyBoard}%' 
             AND m.audit = '1'
          `
@@ -635,8 +634,9 @@ class MomentService {
         LEFT JOIN users u ON m.user_id = u.id
         LEFT JOIN label l ON l.id = m.label_id 
           WHERE
-            m.content LIKE '%${keyBoard}%' AND m.audit = '0' 
-            OR m.title LIKE '%${keyBoard}%' AND m.audit = '0'
+              m.content LIKE '%${keyBoard}%'
+            OR m.title LIKE '%${keyBoard}%' 
+            AND m.audit = '0'
         ORDER BY
           ${order} DESC,
           m.updateTime DESC
@@ -649,8 +649,9 @@ class MomentService {
 				const statement2 = `
           SELECT COUNT(1) momentCount 
           FROM moment m 
-          WHERE m.content LIKE '%${keyBoard}%' AND m.audit = '0' 
-                OR m.title LIKE '%${keyBoard}%' AND m.audit = '0'
+          WHERE m.content LIKE '%${keyBoard}%'
+                OR m.title LIKE '%${keyBoard}%' 
+                AND m.audit = '0'
         `
 
 				const [[{ momentCount }]] = await connection.execute(statement2)
@@ -750,6 +751,18 @@ class MomentService {
 				console.log(error)
 				return error
 			}
+		}
+	}
+
+	async backAudit(momentId, type) {
+		const statement = `UPDATE moment SET audit = ? WHERE id = ?;`
+
+		try {
+			const [result] = await connection.execute(statement, [type, momentId])
+
+			return result
+		} catch (error) {
+			console.log(error)
 		}
 	}
 }

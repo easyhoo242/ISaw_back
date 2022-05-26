@@ -21,6 +21,7 @@ const {
 	countByDay,
 	backListAll,
 	backListAllNoKay,
+	backAudit,
 } = require('./service')
 
 const { CONTENT, PARAMS_ERROR } = require('../../util/error-type')
@@ -52,6 +53,7 @@ class MomentMiddleware {
 
 			ctx.body = new OkResult('发表动态成功~', result.insertId)
 		} catch (error) {
+			console.log(error)
 			ctx.body = new ErrResult('发表动态失败，标签id不存在~')
 		}
 	}
@@ -340,6 +342,21 @@ class MomentMiddleware {
 
 			ctx.body = new OkResult('查询成功~', result)
 		}
+	}
+
+	// 审核文章
+	async postBackAudit(ctx) {
+		const { momentId } = ctx.params
+
+		const { type } = ctx.request.body
+
+		const result = await backAudit(momentId, type)
+
+		if (!result.affectedRows) {
+			ctx.body = new ErrResult('审核失败')
+		}
+
+		ctx.body = new OkResult('审核成功')
 	}
 }
 

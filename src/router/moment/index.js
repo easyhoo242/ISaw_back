@@ -21,6 +21,7 @@ const {
 	getMomentData,
 	getCountByDay,
 	backMomentListAllSearch,
+	postBackAudit,
 } = require('./middleware')
 
 const momentRouter = new Router({ prefix: '/moment' })
@@ -62,6 +63,10 @@ momentRouter.get('/momentData/:id', getMomentData) // 近几天数量
 
 momentRouter.get('/dataByDay/:id', getCountByDay) // 每天数量
 
-momentRouter.get('/back/search/:id', backMomentListAllSearch) // 每天数量
+momentRouter.get('/back/search/:id', backMomentListAllSearch) // 搜索文章
+
+momentRouter.post('/:momentId/back/audit', postBackAudit) // 文章审核
+
+momentRouter.delete('/:momentId/back', removeMoment) // 删除动态
 
 module.exports = momentRouter
