@@ -7,10 +7,10 @@ class MessageMiddleware {
 	// 发表留言
 	async pubMessage(ctx, next) {
 		const { id } = ctx.user
-		const { content } = ctx.request.body
+		const { content, score } = ctx.request.body
 		if (!content) return ctx.app.emit('error', new Error(PARAMS_ERROR), ctx)
 
-		const result = await pub(id, content)
+		const result = await pub(id, content, score)
 		ctx.body = new OkResult('留言发表成功~', result)
 	}
 

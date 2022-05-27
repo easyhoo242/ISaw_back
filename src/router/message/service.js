@@ -2,10 +2,11 @@ const connection = require('../../app/database')
 
 class MessageService {
 	// 发表留言
-	async pub(uId, content) {
-		const statement = 'INSERT INTO `message` (user_id, content) VALUES (?, ?)'
+	async pub(uId, content, score) {
+		const statement =
+			'INSERT INTO `message` (user_id, content, score) VALUES (?, ?, ?)'
 		try {
-			await connection.execute(statement, [uId, content])
+			await connection.execute(statement, [uId, content, score])
 			return '发表留言成功'
 		} catch (error) {
 			return '发表留言失败'
