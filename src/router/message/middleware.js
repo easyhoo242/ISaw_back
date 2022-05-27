@@ -32,11 +32,9 @@ class MessageMiddleware {
 	async editMessage(ctx) {
 		try {
 			const { messageId } = ctx.params
-			const { content = '' } = ctx.request.body
+			const { content = '', score } = ctx.request.body
 
-			console.log(messageId, content)
-
-			const result = await edit(messageId, content)
+			await edit(messageId, content, score)
 
 			ctx.body = new OkResult('修改成功~')
 		} catch (error) {

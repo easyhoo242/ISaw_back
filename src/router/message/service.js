@@ -25,10 +25,10 @@ class MessageService {
 	}
 
 	// 修改留言
-	async edit(messageId, content) {
-		const statement = 'UPDATE message SET content = ? WHERE id = ?;'
+	async edit(messageId, content, score) {
+		const statement = 'UPDATE message SET content = ?, score = ? WHERE id = ?;'
 		try {
-			await connection.execute(statement, [content, messageId])
+			await connection.execute(statement, [content, score, messageId])
 			return '修改成功'
 		} catch (error) {
 			return '修改失败' + error.message
