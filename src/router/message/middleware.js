@@ -43,7 +43,11 @@ class MessageMiddleware {
 	}
 
 	async getMessageList(ctx) {
-		const result = await messageList()
+		const { offset = '0' } = ctx.query
+
+		console.log(ctx.request)
+
+		const result = await messageList(offset)
 
 		ctx.body = new OkResult('获取最新留言接口列表~', result)
 	}

@@ -36,16 +36,27 @@ class MessageService {
 	}
 
 	// 全部留言
-	async messageList() {
+	async messageList(offset) {
 		const statement = `
-    SELECT m.id, m.content, m.createTime,
+    SELECT m.id, m.content, m.score,
+      DATE_FORMAT( m.createTime, '%Y-%m-%d %H:%i:%S' ) 'createTime',
       JSON_OBJECT('id', u.id, 'nickname', u.nickname, 'avatarUrl', u.avatar_url) user
     FROM message m LEFT JOIN users u ON m.user_id = u.id
     ORDER BY createTime DESC
+    LIMIT 10 OFFSET ?
     `
+
 		try {
-			const [result] = await connection.execute(statement)
-			return result
+			const [result] = await connection.execute(statement, [offset])
+
+			const [[{ count }]] = await connection.execute(
+				`SELECT COUNT(1) count from message;`
+			)
+
+			return {
+				list: result,
+				count,
+			}
 		} catch (error) {
 			return error.message
 		}
