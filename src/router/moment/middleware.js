@@ -358,11 +358,13 @@ class MomentMiddleware {
 
 		const result = await backAudit(momentId, type)
 
+		const msg = type === 1 ? '审核' : '驳回'
+
 		if (!result.affectedRows) {
-			ctx.body = new ErrResult('审核失败')
+			ctx.body = new ErrResult(`${msg}成功`)
 		}
 
-		ctx.body = new OkResult('审核成功')
+		ctx.body = new OkResult(`${msg}成功`)
 	}
 
 	// 浏览记录
