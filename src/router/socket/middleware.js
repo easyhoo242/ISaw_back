@@ -47,7 +47,7 @@ class SocketMiddleware {
 						list.push({ ctx, userInfo })
 						const result = await selectChatRecord()
 						assignSend(ctx, list.length, result)
-						allSend(list.length, currentUser.id + '上线')
+						allSend(list.length, currentUser.nickname + '上线')
 						return
 					}
 
